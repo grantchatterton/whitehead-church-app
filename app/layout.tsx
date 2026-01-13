@@ -1,0 +1,39 @@
+import type { Metadata } from "next";
+
+import Container from "react-bootstrap/Container";
+import Stack from "react-bootstrap/Stack";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import AppFooter from "@/components/shared/AppFooter";
+import AppNavbar from "@/components/shared/AppNavbar";
+import BackgroundImage from "@/components/shared/BackgroundImage";
+import { description, title } from "@/lib/config";
+
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title,
+  description,
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" data-bs-theme="dark">
+      <body className="position-relative min-vh-100">
+        <BackgroundImage />
+        <Stack direction="vertical" className="min-vh-100 p-4">
+          <AppNavbar title={title} />
+          <Container as={"main"} className="mt-auto">
+            {children}
+          </Container>
+          <AppFooter title={title} />
+        </Stack>
+      </body>
+    </html>
+  );
+}
