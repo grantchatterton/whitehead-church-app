@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-**Purpose**: Church website for Whitehead Union Baptist Church  
+**Purpose**: Church website for Whitehead Baptist Church  
 **Type**: Next.js 16 web application with React 19 and TypeScript  
 **Size**: ~900 lines of code, 46MB (with dependencies)  
 **Runtime**: Node.js v20 (specifically tested with v20.19.6), npm v10.8.2

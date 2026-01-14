@@ -3,7 +3,7 @@ export default function AboutSummary() {
     <>
       <p>
         Nestled atop a quiet hill in the Blue Ridge Mountains of Alleghany
-        County, North Carolina, Whitehead Union Baptist Church rests in a place
+        County, North Carolina, Whitehead Baptist Church rests in a place
         where time seems to slow and hearts are invited to be still. Surrounded
         by God&apos;s creation and wrapped in peaceful serenity, the church
         offers a gentle invitation to all who pass by: come and rest. Many
