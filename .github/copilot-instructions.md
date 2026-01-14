@@ -1,90 +1,239 @@
-# AI Coding Guidelines for Church App
+# Copilot Instructions for Whitehead Church App
 
-## Project Overview
-This is a **Next.js 16 church website** built with React 19, TypeScript, and React Bootstrap. It uses a page-based routing structure with app directory conventions and Tailwind CSS styling.
+## Repository Overview
 
-## Architecture
+**Purpose**: Church website for Whitehead Union Baptist Church  
+**Type**: Next.js 16 web application with React 19 and TypeScript  
+**Size**: ~900 lines of code, 46MB (with dependencies)  
+**Runtime**: Node.js v20 (specifically tested with v20.19.6), npm v10.8.2
 
-### File Structure & Key Components
-- **`app/`** - Next.js app directory with route segments
-  - `(home)/page.tsx` - Home page (uses path group for organization)
-  - `about/`, `contact/` - Static pages with consistent layouts
-  - `layout.tsx` - Root layout with global navbar/footer structure
-- **`components/`** - Reusable React components (all client-only with `"use client"`)
-  - UI Components: `AppNavbar`, `AppFooter`, `PageTitle` (small, composable)
-  - Feature Components: `HomeCarousel`, `Timeline`, `HomeHero` (larger, page-specific)
-  - Icon/Image Components: `CrossImage`, `CompassIcon`, `HomeIcon` (use Next.js `Image` for optimization)
+## Critical Setup - ALWAYS Follow This Order
 
-### Layout Architecture
-The app uses a sticky footer pattern: `Stack(direction="vertical", min-vh-100)` with navbar at top, content in middle, footer at bottom. All pages wrap in root layout with consistent spacing (`p-4`).
+### 1. Install Dependencies (REQUIRED FIRST)
 
-### State & Data Management
-- **No state management library used** - prefer React hooks for local component state
-- Data is currently hardcoded in components (e.g., carousel items, timeline events)
-- For future data: fetch at page level, pass via props to presentational components
+**ALWAYS run `npm install` before any other command.** All npm scripts will fail without dependencies.
 
-## Development Conventions
-
-### Styling Strategy
-- **React Bootstrap** for component framework (Grid, Nav, Carousel, Stack)
-- **Bootstrap CSS classes** for sizing, spacing, text utilities
-- **Tailwind CSS** (configured but minimally used - prefer Bootstrap for consistency)
-- Dark theme enabled on `<html>` element: `data-bs-theme="dark"`
-- Responsive Bootstrap utilities: `md={4}` for grid columns, `mb-4 mb-md-0` for mobile-first spacing
-
-### Component Patterns
-1. **Functional Components** - Use named exports (not default) when multiple components per file
-2. **TypeScript Props** - Always type component props as inline interfaces:
-   ```tsx
-   export default function ComponentName({ 
-     prop1, 
-     prop2 = "default" 
-   }: { 
-     prop1: string; 
-     prop2?: string;
-   }) {
-   ```
-3. **Client Components** - Add `"use client"` directive if: using hooks, event handlers, or client state. Server components are default.
-4. **Images** - Use Next.js `Image` component (not HTML `<img>`) and import static images from `@/public/`. Set `loading="eager"` for above-fold images.
-
-### Imports & Aliases
-- Use path alias `@/` for all internal imports (configured in `tsconfig.json`)
-- Organize imports: React/Next → Third-party → Internal components
-- No wildcard imports; Prettier enforces sorted imports via `@trivago/prettier-plugin-sort-imports`
-
-## Development Workflow
-
-### Build & Run Commands
 ```bash
-npm run dev      # Start dev server (http://localhost:3000)
-npm run build    # Production build
-npm run start    # Serve production build
-npm run lint     # Run ESLint + Prettier checks
+npm install  # Takes ~15-40 seconds, installs all required packages (~400 packages)
 ```
 
-### Code Quality
-- **ESLint** enforces Next.js best practices (core-web-vitals, TypeScript rules, no Prettier conflicts)
-- **Prettier** auto-formats with sorted imports; no manual formatting needed
-- **TypeScript Strict Mode** enabled - all types must be explicit
+**Error if skipped**: `sh: 1: next: not found` or `sh: 1: eslint: not found`
 
-### Key Files to Understand Before Coding
-- [next.config.ts](next.config.ts) - Empty; modify here for Next.js-specific configuration
-- [config.ts](config.ts) - Currently empty; reserved for app-level constants
-- [eslint.config.mjs](eslint.config.mjs) - Flat config; extends Next.js + Prettier rules
-- [app/layout.tsx](app/layout.tsx) - Root layout; modify for global content or metadata
+**If npm install has issues**: Occasionally dependencies may be in a corrupted state. Clean and reinstall:
 
-## Page-Specific Notes
-- **Home page** - Uses `(home)` path group; contains hero, carousel, info cards, and timeline sections
-- **About/Contact pages** - Static pages; follow home page layout pattern with `PageTitle` component
-- **Responsive design** - Mobile-first; use Bootstrap breakpoints (md, lg)
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
 
-## Common Gotchas
-- ⚠️ All components in `components/` must have `"use client"` unless proven as server components
-- ⚠️ Don't mix Tailwind and Bootstrap utilities in the same component (use Bootstrap for consistency)
-- ⚠️ Next.js `Image` component requires explicit `width` and `height`; don't use responsive sizing without container queries
-- ⚠️ App router uses layouts and route segments; no `pages/` directory structure
+### 2. Build Commands (Validated Sequence)
 
-## Future Considerations
-- State management: Plan for Redux/Zustand if app complexity grows beyond component props
-- Backend integration: If adding API routes, use `app/api/` directory with server-only secrets in `.env.local`
-- Database: No ORM configured; evaluate Prisma or Drizzle when needed
+```bash
+# Development server (runs on http://localhost:3000)
+npm run dev
+
+# Production build (takes ~10 seconds with Turbopack)
+npm run build
+
+# Lint code (ESLint with Prettier integration)
+npm run lint
+
+# Start production server (requires prior build)
+npm run start
+```
+
+### 3. Build Output & Timing
+
+- **Clean build time**: ~10 seconds using Turbopack
+- **Output directory**: `.next/` (gitignored, safe to delete for clean builds)
+- **Standalone output**: Enabled via `next.config.ts` for Docker deployment
+- **Routes generated**: 4 static pages (/, /about, /gallery, /\_not-found) + 1 dynamic API route (/api/timeline)
+
+## Project Architecture
+
+### Directory Structure
+
+```
+├── app/                      # Next.js App Router (7 route files)
+│   ├── (home)/page.tsx      # Home page (route group)
+│   ├── (info)/              # Info pages route group
+│   │   ├── about/page.tsx   # About page with timeline
+│   │   ├── gallery/page.tsx # Photo gallery page
+│   │   └── layout.tsx       # Shared layout for info pages
+│   ├── api/timeline/        # API route for timeline data
+│   ├── layout.tsx           # Root layout (navbar/footer)
+│   ├── loading.tsx          # Loading UI
+│   └── globals.css          # Global styles
+├── components/              # React components (18 files, all client-side)
+│   ├── about/               # About page components
+│   ├── gallery/             # Gallery carousel
+│   ├── home/                # Home page components
+│   └── shared/              # Reusable UI (navbar, footer, images)
+├── lib/                     # Data and configuration (5 files)
+│   ├── config.ts            # Site constants (title, address, contact)
+│   ├── gallery.ts           # Gallery image data
+│   ├── home.ts              # Home page data
+│   ├── staff.ts             # Staff member data
+│   └── timeline.ts          # Timeline events data
+├── models/                  # TypeScript interfaces (4 files)
+│   ├── GalleryImage.ts
+│   ├── ServiceTime.ts
+│   ├── StaffMember.ts
+│   └── TimelineEvent.ts
+└── public/                  # Static assets (images)
+```
+
+### Key Configuration Files (Root Directory)
+
+- `package.json` - Dependencies and npm scripts
+- `tsconfig.json` - TypeScript config with strict mode, `@/*` path alias
+- `eslint.config.mjs` - Flat config using Next.js + Prettier rules
+- `.prettierrc.json` - Prettier config with import sorting plugin
+- `next.config.ts` - Next.js config with `output: "standalone"` for Docker
+- `postcss.config.mjs` - PostCSS with Tailwind CSS plugin
+- `Dockerfile` - Multi-stage Docker build (Node 20 Alpine)
+- `compose.yml` - Docker Compose with MongoDB service (port 27017)
+
+## Build & Validation Workflow
+
+### Pre-Build Checklist
+
+1. ✅ Run `npm install` if `node_modules/` doesn't exist
+2. ✅ Check Node version is v20+ (`node --version`)
+3. ✅ Ensure no `.next/` conflicts (delete for clean build if needed)
+
+### Validation Steps (in order)
+
+```bash
+# 1. Lint check (catches TypeScript errors + style issues)
+npm run lint
+# Expected: May show warnings (e.g., unused imports), but should exit 0
+
+# 2. Production build (validates everything compiles)
+npm run build
+# Expected: "✓ Compiled successfully in ~10s", generates 7 routes
+
+# 3. Format check (optional, Prettier validation)
+npx prettier --check .
+# Expected: "All matched files use Prettier code style!"
+```
+
+### Known Lint Warnings (Safe to Ignore)
+
+- `components/gallery/GalleryCarousel.tsx` - "Button is defined but never used" (current as of last check)
+
+## Component & Code Conventions
+
+### TypeScript & Component Patterns
+
+- **All components**: Functional components with TypeScript
+- **Client components**: Add `"use client"` directive for hooks/event handlers (most components)
+- **Props typing**: Use inline interfaces, not separate type definitions
+  ```tsx
+  export default function Component({
+    prop1,
+    prop2 = "default",
+  }: {
+    prop1: string;
+    prop2?: string;
+  }) {}
+  ```
+
+### Styling Strategy (IMPORTANT)
+
+- **Primary**: React Bootstrap components (Container, Stack, Row, Col, Nav, Carousel)
+- **Utility classes**: Bootstrap CSS utilities for spacing/sizing (e.g., `mb-4`, `p-4`)
+- **Avoid**: Mixing Tailwind classes with Bootstrap (Tailwind configured but minimally used)
+- **Theme**: Dark mode via `data-bs-theme="dark"` on `<html>`
+
+### Import Organization (Prettier enforced)
+
+Order: `server-only` → Built-ins → React/Next → React Bootstrap → Third-party → `@/*` imports → Relative
+
+```tsx
+import { Metadata } from "next";
+
+// Next.js
+import Container from "react-bootstrap/Container";
+
+// React Bootstrap
+import AppNavbar from "@/components/shared/AppNavbar";
+
+// Internal
+import "./globals.css";
+
+// Relative
+```
+
+### Path Aliases
+
+- **`@/*`** resolves to project root (e.g., `@/components`, `@/lib/config`)
+- Configured in `tsconfig.json` paths
+
+## Docker & Deployment
+
+### Docker Build (Multi-stage)
+
+```bash
+# Build image (uses package-lock.json, runs npm ci)
+docker build -t whitehead-church-app .
+
+# Run container
+docker run -p 3000:3000 whitehead-church-app
+```
+
+**Build stages**: deps → builder → runner (production-optimized)  
+**Output**: Standalone mode with optimized static assets
+
+### Docker Compose (MongoDB)
+
+```bash
+docker compose up -d  # Starts MongoDB on port 27017
+```
+
+Note: MongoDB configured but not currently used by app (future database integration)
+
+## Data Management
+
+- **No database**: All data is hardcoded in `lib/*.ts` files
+- **API route**: `/api/timeline` serves data from `lib/timeline.ts`
+- **State management**: None (use React hooks for component state)
+
+## Common Pitfalls & Solutions
+
+### Build Failures
+
+❌ **`next: not found`** → Run `npm install` first  
+❌ **TypeScript errors** → Check `tsconfig.json` strict mode compliance  
+❌ **Module not found** → Verify `@/*` imports use correct paths
+
+### Component Issues
+
+❌ **Hydration errors** → Ensure `"use client"` for client-only features  
+❌ **Image optimization errors** → Use `next/image` with explicit width/height  
+❌ **Bootstrap styles not loading** → Check `bootstrap/dist/css/bootstrap.min.css` import in layout
+
+## Testing & Validation
+
+**No test framework configured** - Manual validation required:
+
+1. Build must succeed without errors (`npm run build`)
+2. Lint must pass with only known warnings (`npm run lint`)
+3. Dev server must start (`npm run dev`) and pages load at localhost:3000
+
+## CI/CD Information
+
+**No GitHub Actions workflows configured** - Validation is manual only. When adding CI:
+
+- Use Node 20+ in workflow
+- Run `npm install → npm run lint → npm run build` sequence
+- Consider adding `npx prettier --check .` for formatting validation
+
+## Quick Reference: File Manifest
+
+**Root files**: `.dockerignore`, `.gitignore`, `.prettierignore`, `.prettierrc.json`, `compose.yml`, `Dockerfile`, `eslint.config.mjs`, `next.config.ts`, `package.json`, `postcss.config.mjs`, `README.md`, `tsconfig.json`  
+**Gitignored**: `node_modules/`, `.next/`, `.env*`, `*.log`, `*.tsbuildinfo`, `info.txt`, `/secrets`
+
+---
+
+**Trust these instructions.** Only search for additional information if commands fail or documented behavior differs from observed behavior.
