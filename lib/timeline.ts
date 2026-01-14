@@ -13,17 +13,17 @@ export async function getTimelineEvents(): Promise<TimelineEvent[]> {
     },
     {
       id: 2,
-      title: "Hosting the First Church Association",
-      date: "September 16-17, 1938",
-      description:
-        "Later that year, on September 16 and 17, Whitehead Baptist Church hosted its first church association—marking an important milestone in its growing ministry and service to the community.",
-    },
-    {
-      id: 3,
       title: "Founding Member of New Association",
       date: "April 1938",
       description:
         "In April of 1938, a convention was held at Cherry Lane Church to organize a new association, and Whitehead Baptist Church proudly became a founding part of that fellowship.",
+    },
+    {
+      id: 3,
+      title: "Hosting the First Church Association",
+      date: "September 16-17, 1938",
+      description:
+        "Later that year, on September 16 and 17, Whitehead Baptist Church hosted its first church association—marking an important milestone in its growing ministry and service to the community.",
     },
     {
       id: 4,
