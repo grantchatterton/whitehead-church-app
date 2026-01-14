@@ -9,7 +9,7 @@ export async function getTimelineEvents(): Promise<TimelineEvent[]> {
       title: "The Beginning",
       date: "March 9, 1938",
       description:
-        "The story of Whitehead Union Baptist Church began on March 9, 1938, when a small but faithful group came together with a shared vision. A presbytery was organized, the church was lovingly named, and a building committee was appointed. The land was graciously deeded to the church trustees by F. M. Joines and wife, and H. M. Joines and wife.",
+        "The story of Whitehead Union Baptist Church began on March 9, 1938, when a small but faithful group came together with a shared vision. A presbytery was organized, the church was lovingly named, and a building committee was appointed. The land was graciously deeded to the church trustees by F. M. Joines and wife, and H. M. Joines and wife. Early pastoral leadership was provided by G. W. Miles and R. J. Toliver, and Ernest Hoppers faithfully served as the church's first clerk.",
     },
     {
       id: 2,
@@ -27,20 +27,13 @@ export async function getTimelineEvents(): Promise<TimelineEvent[]> {
     },
     {
       id: 4,
-      title: "Land Deeded to Church Trustees & First Pastoral Leadership",
-      date: "1938",
-      description:
-        "The land was graciously deeded to the church trustees by F. M. Joines and wife, and H. M. Joines and wife. Early pastoral leadership was provided by G. W. Miles and R. J. Toliver, and Ernest Hoppers faithfully served as the church's first clerk.",
-    },
-    {
-      id: 5,
       title: "Rebuilding After the Fire",
       date: "April 27, 1973",
       description:
         "On April 27, 1973, tragedy struck when the church building was destroyed by fire. Yet even in the face of loss, the faith of the congregation did not waver. United by determination, prayer, and trust in God, the members came together and rebuilt. In just three months and fourteen days, the doors of the church reopened, and worship services resumed—standing as a powerful testimony to resilience, faith, and God's sustaining grace.",
     },
     {
-      id: 6,
+      id: 5,
       title: "Continued Ministry and Worship",
       date: "Present Day",
       description:
