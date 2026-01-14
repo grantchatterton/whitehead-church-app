@@ -14,7 +14,7 @@
 **ALWAYS run `npm install` before any other command.** All npm scripts will fail without dependencies.
 
 ```bash
-npm install  # Takes ~15-20 seconds, installs 402 packages
+npm install  # Takes ~15-40 seconds, installs all required packages (~400 packages)
 ```
 
 **Error if skipped**: `sh: 1: next: not found` or `sh: 1: eslint: not found`
