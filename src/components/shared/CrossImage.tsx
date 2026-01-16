@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import crossImage from "@/public/images/cross.png";
+import crossImage from "@public/images/cross.png";
 
 export default function CrossImage({
   width = 192,

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import backgroundImage from "@/public/images/background.jpg";
+import backgroundImage from "@public/images/background.jpg";
 
 export default function BackgroundImage() {
   return (
