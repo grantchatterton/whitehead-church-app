@@ -7,8 +7,6 @@ import Modal from "react-bootstrap/Modal";
 import Pagination from "react-bootstrap/Pagination";
 import Placeholder from "react-bootstrap/Placeholder";
 
-import axios from "axios";
-
 import type { TimelineEvent } from "@/models/TimelineEvent";
 
 export default function TimelineContainer() {
@@ -25,15 +23,16 @@ export default function TimelineContainer() {
     if (!timelineEvents) {
       setIsLoading(true);
       try {
-        const response = await axios.get<TimelineEvent[]>("/api/timeline");
-        setTimelineEvents(response.data);
+        const response = await fetch("/api/timeline");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: TimelineEvent[] = await response.json();
+        setTimelineEvents(data);
       } catch (err) {
         console.error("Failed to fetch timeline events:", err);
-        if (axios.isAxiosError(err) && err.response) {
-          setError(err.response.data.error || "An unexpected error occurred.");
-        } else {
-          setError("An unexpected error occurred.");
-        }
+        setError("An unexpected error occurred.");
       } finally {
         setIsLoading(false);
       }
