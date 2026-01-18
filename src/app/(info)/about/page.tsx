@@ -1,7 +1,7 @@
 import StaffMembersList from "@/components/about/staff/StaffMembersList";
 import TimelineContainer from "@/components/about/timeline/TimelineContainer";
 
-export default async function Page() {
+export default function Page() {
   return (
     <>
       <h1>About Us</h1>
