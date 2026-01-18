@@ -8,9 +8,9 @@ import { title } from "@/lib/config";
 export default function HomeNavbar() {
   return (
     <>
-      <Stack direction="horizontal" className="justify-content-center" gap={2}>
+      <Stack direction="horizontal" className="justify-content-center p-2" gap={2}>
         <CrossImage width={96} height={96} />
-        <h1 className="fw-bold">{title}</h1>
+        <h1 className="fw-bold mb-0">{title}</h1>
       </Stack>
       <Navbar className="justify-content-center mt-3">
         <AppNavbarItems />
