@@ -5,7 +5,8 @@ services:
       - key: MONGODB_URI
         value: ${MONGODB_URI}
         type: SECRET
-        scope: RUN_TIME
+        scope: RUN_AND_BUILD_TIME
+    http_port: 3000
     github:
       branch: main
       repo: grantchatterton/whitehead-church-app
