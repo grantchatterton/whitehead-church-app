@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
+
 import StaffMembersList from "@/components/about/staff/StaffMembersList";
 import TimelineContainer from "@/components/about/timeline/TimelineContainer";
+import { title as siteTitle } from "@/lib/config";
+
+export const metadata: Metadata = {
+  title: `About | ${siteTitle}`,
+};
 
 export default function Page() {
   return (
