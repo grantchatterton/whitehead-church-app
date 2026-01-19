@@ -1,6 +1,7 @@
 name: whitehead-church-app
 services:
-  - dockerfile_path: /Dockerfile
+  - name: web
+    dockerfile_path: /Dockerfile
     envs:
       - key: MONGODB_URI
         value: ${MONGODB_URI}
