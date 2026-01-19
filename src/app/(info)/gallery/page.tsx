@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 
 import GalleryCarousel from "@/components/gallery/GalleryCarousel";
 import { getGalleryImages } from "@/lib/gallery";
-import { title as siteTitle } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: `Gallery | ${siteTitle}`,
+  title: "Gallery",
+  description:
+    "Browse our photo gallery showcasing Whitehead Baptist Church and our community. View images of our church, events, and the beautiful Blue Ridge Mountains setting.",
 };
 
 export default async function Page() {

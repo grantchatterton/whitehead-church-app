@@ -13,7 +13,10 @@ import { description, title } from "@/lib/config";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title,
+  title: {
+    default: title,
+    template: `%s | ${title}`,
+  },
   description,
 };
 

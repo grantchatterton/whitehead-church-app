@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 
 import StaffMembersList from "@/components/about/staff/StaffMembersList";
 import TimelineContainer from "@/components/about/timeline/TimelineContainer";
-import { title as siteTitle } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: `About | ${siteTitle}`,
+  title: "About",
+  description:
+    "Learn about the history and staff of Whitehead Baptist Church. Discover our journey from humble beginnings to the present day in the Blue Ridge Mountains.",
 };
 
 export default function Page() {
