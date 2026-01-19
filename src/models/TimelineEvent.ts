@@ -1,3 +1,5 @@
+import "server-only";
+
 import mongoose from "mongoose";
 
 export interface TimelineEvent extends mongoose.Document {
@@ -6,6 +8,11 @@ export interface TimelineEvent extends mongoose.Document {
   dateDisplay?: string;
   description: string;
 }
+
+export type TimelineEventDTO = Pick<
+  TimelineEvent,
+  "title" | "dateDisplay" | "description"
+> & { _id: string; date: string };
 
 const TimelineEventSchema = new mongoose.Schema<TimelineEvent>({
   title: { type: String, required: true },
