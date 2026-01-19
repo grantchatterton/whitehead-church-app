@@ -18,6 +18,8 @@ jobs:
       - name: Deploy the app
         id: deploy
         uses: digitalocean/app_action/deploy@v2
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         with:
           deploy_pr_preview: "true"
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}

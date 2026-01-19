@@ -1,0 +1,11 @@
+name: whitehead-church-app
+services:
+  - name: web
+    envs:
+      - key: MONGODB_URI
+        value: ${MONGODB_URI}
+        scope: RUN_TIME
+        type: SECRET
+    github:
+      branch: main
+      repo: grantchatterton/whitehead-church-app
