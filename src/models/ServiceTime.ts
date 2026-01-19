@@ -33,5 +33,5 @@ const ServiceTimeSchema = new mongoose.Schema<ServiceTime>({
   endTime: { type: String, required: true },
 });
 
-export default mongoose.models.ServiceTime ||
+export default (mongoose.models.ServiceTime as mongoose.Model<ServiceTime>) ||
   mongoose.model<ServiceTime>("ServiceTime", ServiceTimeSchema);

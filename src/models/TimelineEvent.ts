@@ -21,5 +21,6 @@ const TimelineEventSchema = new mongoose.Schema<TimelineEvent>({
   description: { type: String, required: true },
 });
 
-export default mongoose.models.TimelineEvent ||
+export default (mongoose.models
+  .TimelineEvent as mongoose.Model<TimelineEvent>) ||
   mongoose.model<TimelineEvent>("TimelineEvent", TimelineEventSchema);
