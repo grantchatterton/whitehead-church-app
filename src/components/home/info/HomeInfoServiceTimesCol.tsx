@@ -3,6 +3,8 @@ import ServiceTimeModel from "@/models/ServiceTime";
 
 import HomeInfoCol from "./HomeInfoCol";
 
+export const revalidate = 3600; // Revalidate every hour
+
 export default async function HomeInfoServiceTimesCol() {
   await dbConnect();
   const serviceTimes = await ServiceTimeModel.find()
