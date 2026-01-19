@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { getTimelineEvents } from "@/lib/timeline";
+import dbConnect from "@/lib/mongodb";
+import TimelineEventModel from "@/models/TimelineEvent";
 
 export async function GET() {
-  const events = await getTimelineEvents();
-  return NextResponse.json(events);
+  await dbConnect();
+  const data = await TimelineEventModel.find().sort({ date: 1 }).lean();
+  return NextResponse.json(data);
 }
