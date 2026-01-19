@@ -7,14 +7,25 @@ import Modal from "react-bootstrap/Modal";
 import Pagination from "react-bootstrap/Pagination";
 import Placeholder from "react-bootstrap/Placeholder";
 
-import type { TimelineEvent } from "@/models/TimelineEvent";
+import { format as dateFormat, parseISO } from "date-fns";
+
+import type { TimelineEventDTO } from "@/models/TimelineEvent";
+
+async function fetchTimelineEvents(): Promise<TimelineEventDTO[]> {
+  const response = await fetch("/api/timeline");
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+}
 
 export default function TimelineContainer() {
   const [isShowing, setIsShowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[] | null>(
-    null
-  );
+  const [timelineEvents, setTimelineEvents] = useState<
+    TimelineEventDTO[] | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
   const [index, setIndex] = useState(0);
 
@@ -23,12 +34,7 @@ export default function TimelineContainer() {
     if (!timelineEvents) {
       setIsLoading(true);
       try {
-        const response = await fetch("/api/timeline");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data: TimelineEvent[] = await response.json();
+        const data = await fetchTimelineEvents();
         setTimelineEvents(data);
       } catch (err) {
         console.error("Failed to fetch timeline events:", err);
@@ -38,6 +44,11 @@ export default function TimelineContainer() {
       }
     }
   }
+
+  const currTimelineEvent =
+    timelineEvents && index >= 0 && index < timelineEvents.length
+      ? timelineEvents[index]
+      : null;
 
   return (
     <>
@@ -77,19 +88,29 @@ export default function TimelineContainer() {
             </>
           ) : error ? (
             <p>{error}</p>
-          ) : timelineEvents ? (
+          ) : currTimelineEvent ? (
             <>
-              <h5>{timelineEvents[index].title}</h5>
-              <p className="text-muted">{timelineEvents[index].date}</p>
-              <p className="mb-0">{timelineEvents[index].description}</p>
+              <h5>{currTimelineEvent.title}</h5>
+              <p className="text-muted">
+                {currTimelineEvent.dateDisplay ??
+                  dateFormat(
+                    parseISO(currTimelineEvent.date.split("T")[0]),
+                    "PPP"
+                  )}
+              </p>
+              <p className="mb-0">{currTimelineEvent.description}</p>
             </>
-          ) : null}
+          ) : (
+            <p>No timeline events available.</p>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Pagination className="my-0 mx-auto">
             <Pagination.Prev
               onClick={() => setIndex((prev) => Math.max(prev - 1, 0))}
-              disabled={!timelineEvents || index === 0}
+              disabled={
+                !timelineEvents || timelineEvents.length === 0 || index === 0
+              }
             />
             {timelineEvents?.map((event, i) => (
               <Pagination.Item
@@ -109,7 +130,11 @@ export default function TimelineContainer() {
                   )
                 )
               }
-              disabled={!timelineEvents || index === timelineEvents.length - 1}
+              disabled={
+                !timelineEvents ||
+                timelineEvents.length === 0 ||
+                index === timelineEvents.length - 1
+              }
             />
           </Pagination>
         </Modal.Footer>
