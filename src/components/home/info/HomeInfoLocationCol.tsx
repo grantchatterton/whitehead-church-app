@@ -1,6 +1,6 @@
-import { address } from "@/lib/config";
-
 import HomeInfoCol from "./HomeInfoCol";
+
+const address = "5444 Pine Swamp Rd, Sparta, North Carolina, 28675";
 
 export default function HomeInfoLocationCol() {
   return (

@@ -8,9 +8,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AppFooter from "@/components/shared/AppFooter";
 import AppNavbar from "@/components/shared/AppNavbar";
 import BackgroundImage from "@/components/shared/BackgroundImage";
-import { description, title } from "@/lib/config";
 
 import "./globals.css";
+
+const title = "Whitehead Baptist Church";
+const description = `Official website of the ${title}.`;
 
 export const metadata: Metadata = {
   title: {
