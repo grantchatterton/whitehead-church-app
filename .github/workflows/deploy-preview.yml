@@ -21,6 +21,7 @@ jobs:
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_ALLOW_EMAIL_SIGNUP: "true"
         with:
           deploy_pr_preview: "true"
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}

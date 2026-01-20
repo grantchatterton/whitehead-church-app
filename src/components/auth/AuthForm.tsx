@@ -15,9 +15,10 @@ import { signIn, signUp } from "@/lib/auth-client";
 
 interface AuthFormProps {
   mode: "register" | "login";
+  allowSignup?: boolean;
 }
 
-export default function AuthForm({ mode }: AuthFormProps) {
+export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -213,8 +214,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
             </>
           ) : (
             <>
-              Don&apos;t have an account?{" "}
-              <Link href="/register">Register here</Link>
+              {allowSignup && (
+                <>
+                  Don&apos;t have an account?{" "}
+                  <Link href="/register">Register here</Link>
+                </>
+              )}
             </>
           )}
         </p>

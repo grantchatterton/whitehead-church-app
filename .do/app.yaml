@@ -14,6 +14,9 @@ services:
       - key: BETTER_AUTH_URL
         value: ${APP_URL}
         scope: RUN_AND_BUILD_TIME
+      - key: BETTER_AUTH_ALLOW_EMAIL_SIGNUP
+        value: "true"
+        scope: RUN_AND_BUILD_TIME
     http_port: 3000
     github:
       branch: main

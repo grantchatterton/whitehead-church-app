@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import AuthForm from "@/components/auth/AuthForm";
+import { isEmailSignupDisabled } from "@/lib/auth-config";
 
 export const metadata: Metadata = {
   title: "Login | Whitehead Baptist Church",
@@ -8,5 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  return <AuthForm mode="login" />;
+  const signupDisabled = isEmailSignupDisabled();
+
+  return <AuthForm mode="login" allowSignup={!signupDisabled} />;
 }
