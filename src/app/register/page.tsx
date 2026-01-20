@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   // Check if email signup is allowed (defaults to true if not set)
+  // This is a server component, so accessing process.env is safe
   const allowEmailSignup =
     process.env.BETTER_AUTH_ALLOW_EMAIL_SIGNUP !== "false";
 
