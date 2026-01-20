@@ -27,6 +27,15 @@ COPY . .
 ARG MONGODB_URI
 ENV MONGODB_URI=$MONGODB_URI
 
+ARG BETTER_AUTH_SECRET
+ENV BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
+
+ARG BETTER_AUTH_URL
+ENV BETTER_AUTH_URL=$BETTER_AUTH_URL
+
+ARG BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true
+ENV BETTER_AUTH_ALLOW_EMAIL_SIGNUP=$BETTER_AUTH_ALLOW_EMAIL_SIGNUP
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
