@@ -7,7 +7,6 @@ services:
         value: ${MONGODB_URI}
         type: SECRET
         scope: RUN_AND_BUILD_TIME
-    envs:
       - key: BETTER_AUTH_SECRET
         value: ${BETTER_AUTH_SECRET}
         type: SECRET
