@@ -3,7 +3,8 @@ import Stack from "react-bootstrap/Stack";
 
 import AppNavbarItems from "@/components/shared/AppNavbarItems";
 import CrossImage from "@/components/shared/CrossImage";
-import { title } from "@/lib/config";
+
+const title = "Whitehead Baptist Church";
 
 export default function HomeNavbar() {
   return (
