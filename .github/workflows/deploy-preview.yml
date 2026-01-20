@@ -20,6 +20,7 @@ jobs:
         uses: digitalocean/app_action/deploy@v2
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
         with:
           deploy_pr_preview: "true"
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
