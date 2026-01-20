@@ -5,7 +5,7 @@ import Link from "next/link";
 import Container from "react-bootstrap/Container";
 
 import AuthForm from "@/components/auth/AuthForm";
-import { isEmailSignupAllowed } from "@/lib/auth-config";
+import { isEmailSignupDisabled } from "@/lib/auth-config";
 
 export const metadata: Metadata = {
   title: "Register | Whitehead Baptist Church",
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default function RegisterPage() {
-  const allowEmailSignup = isEmailSignupAllowed();
+  const signupDisabled = isEmailSignupDisabled();
 
-  if (!allowEmailSignup) {
+  if (signupDisabled) {
     return (
       <Container className="py-5">
         <div
