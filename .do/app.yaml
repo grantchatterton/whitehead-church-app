@@ -7,6 +7,11 @@ services:
         value: ${MONGODB_URI}
         type: SECRET
         scope: RUN_AND_BUILD_TIME
+    envs:
+      - key: BETTER_AUTH_SECRET
+        value: ${BETTER_AUTH_SECRET}
+        type: SECRET
+        scope: RUN_AND_BUILD_TIME
     http_port: 3000
     github:
       branch: main
