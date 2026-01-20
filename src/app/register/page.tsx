@@ -5,6 +5,7 @@ import Link from "next/link";
 import Container from "react-bootstrap/Container";
 
 import AuthForm from "@/components/auth/AuthForm";
+import { isEmailSignupAllowed } from "@/lib/auth-config";
 
 export const metadata: Metadata = {
   title: "Register | Whitehead Baptist Church",
@@ -12,10 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function RegisterPage() {
-  // Check if email signup is allowed (defaults to true if not set)
-  // This is a server component, so accessing process.env is safe
-  const allowEmailSignup =
-    process.env.BETTER_AUTH_ALLOW_EMAIL_SIGNUP !== "false";
+  const allowEmailSignup = isEmailSignupAllowed();
 
   if (!allowEmailSignup) {
     return (

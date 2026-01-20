@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import AuthForm from "@/components/auth/AuthForm";
+import { isEmailSignupAllowed } from "@/lib/auth-config";
 
 export const metadata: Metadata = {
   title: "Login | Whitehead Baptist Church",
@@ -8,10 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  // Check if email signup is allowed (defaults to true if not set)
-  // This is a server component, so accessing process.env is safe
-  const allowEmailSignup =
-    process.env.BETTER_AUTH_ALLOW_EMAIL_SIGNUP !== "false";
+  const allowEmailSignup = isEmailSignupAllowed();
 
   return <AuthForm mode="login" allowSignup={allowEmailSignup} />;
 }
