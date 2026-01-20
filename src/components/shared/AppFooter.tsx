@@ -3,7 +3,6 @@
 import Link from "next/link";
 
 import Container from "react-bootstrap/Container";
-import Stack from "react-bootstrap/Stack";
 
 import { useSession } from "@/lib/auth-client";
 
