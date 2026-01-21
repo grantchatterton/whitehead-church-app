@@ -13,7 +13,7 @@ export default function StaffMemberCard({
 }: {
   name: string;
   roles: string[];
-  avatarUrl?: string | null;
+  avatarUrl?: string;
 }) {
   const avatarWidth = 150;
   const avatarHeight = 150;
