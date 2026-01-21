@@ -11,8 +11,7 @@ A modern, responsive church website built with Next.js 16, React 19, and TypeScr
 - **Photo Gallery** - Carousel showcase of church activities and facilities
 - **Authentication System** - Email-based user authentication powered by Better Auth
 - **Responsive Design** - Built with React Bootstrap for mobile-first accessibility
-- **Dark Mode** - Modern dark theme for comfortable viewing
-- **MongoDB Integration** - Database support for user authentication and future features
+- **MongoDB Integration** - Database support for user authentication and timeline data storage
 
 ## Prerequisites
 
@@ -144,10 +143,34 @@ whitehead-church-app/
 - **React 19** - UI library
 - **TypeScript 5** - Type-safe development
 - **React Bootstrap** - Component library
-- **Bootstrap 5** - CSS framework with dark mode
+- **Bootstrap 5** - CSS framework
 - **Better Auth** - Authentication solution
 - **MongoDB** - Database via Mongoose ODM
 - **Docker** - Containerization
+
+## Data Storage & API Routes
+
+### MongoDB/Mongoose
+
+The application uses MongoDB for data persistence with Mongoose ODM. Connection management is handled via `src/lib/mongodb.ts` with connection caching for optimal performance.
+
+**Data Models:**
+- `TimelineEvent` - Church history timeline events with title, date, and description
+- User authentication data (managed by Better Auth)
+
+**Database Operations:**
+- Timeline events are retrieved via Mongoose queries (`TimelineEventModel.find().sort()`)
+- All models use TypeScript interfaces for type safety
+- Connection pooling and caching prevent redundant database connections
+
+### API Routes
+
+The application implements Next.js API routes under `src/app/api/`:
+
+- **`/api/timeline`** - GET endpoint that retrieves timeline events from MongoDB, sorted chronologically
+- **`/api/auth/[...all]`** - Better Auth handler for authentication operations (login, register, logout)
+
+All API routes use server-side data fetching with MongoDB queries and return JSON responses.
 
 ## Development Guidelines
 
@@ -155,7 +178,6 @@ whitehead-church-app/
 - Client components require `"use client"` directive
 - Use React Bootstrap for UI components
 - Bootstrap CSS classes for utilities
-- Dark mode via `data-bs-theme="dark"`
 - Path alias `@/*` resolves to `src/*`
 
 ## Contributing
