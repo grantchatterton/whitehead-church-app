@@ -155,14 +155,10 @@ whitehead-church-app/
 The application uses MongoDB for data persistence with Mongoose ODM. Connection management is handled via `src/lib/mongodb.ts` with connection caching for optimal performance.
 
 **Data Models:**
-- `TimelineEvent` - Church history timeline events with title, date, and description
+- `ServiceTime` - Church service times/schedule
 - `StaffMember` - Staff members affiliated with the church including name, roles, avatar URL, etc.
+- `TimelineEvent` - Church history timeline events with title, date, and description
 - User authentication data (managed by Better Auth)
-
-**Database Operations:**
-- Timeline events and staff members are retrieved via Mongoose queries
-- All models use TypeScript interfaces for type safety
-- Connection pooling and caching prevent redundant database connections
 
 ### API Routes
 
