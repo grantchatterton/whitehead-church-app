@@ -65,6 +65,8 @@ npm run dev
 
 The application will be available at [http://localhost:5000](http://localhost:5000)
 
+> **Note**: The development server runs on port 5000, while production builds run on port 3000.
+
 ### Building for Production
 
 Build the application:
@@ -80,6 +82,8 @@ Start the production server:
 ```bash
 npm start
 ```
+
+The production server will run on [http://localhost:3000](http://localhost:3000)
 
 ### Linting
 
@@ -163,16 +167,24 @@ whitehead-church-app/
 
 ### Using Docker Compose (Recommended)
 
-1. Start MongoDB and build the application:
+1. Create a `.env` file for Docker Compose with your environment variables:
+```env
+MONGODB_URI=mongodb://db:27017/whitehead-church
+BETTER_AUTH_SECRET=your-secret-key-here
+BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true
+```
+
+2. Start MongoDB and build the application:
 ```bash
 docker compose up -d
 ```
 
 This will:
 - Start MongoDB on port 27017
-- Build and run the Next.js application on port 3000
+- Build and run the Next.js application on port 3000 (production)
 
-2. Stop the services:
+3. Stop the services:
 ```bash
 docker compose down
 ```
@@ -181,21 +193,22 @@ docker compose down
 
 1. Build the image:
 ```bash
-docker build \
-  --build-arg MONGODB_URI=mongodb://localhost:27017/whitehead-church \
-  --build-arg BETTER_AUTH_SECRET=your-secret-key \
-  --build-arg BETTER_AUTH_URL=http://localhost:3000 \
-  -t whitehead-church-app .
+docker build -t whitehead-church-app .
 ```
 
-2. Run the container:
+> **Note**: Build-time environment variables are optional. The Dockerfile accepts them but it's more secure to use runtime variables.
+
+2. Run the container with environment variables:
 ```bash
 docker run -p 3000:3000 \
   -e MONGODB_URI=mongodb://host.docker.internal:27017/whitehead-church \
   -e BETTER_AUTH_SECRET=your-secret-key \
   -e BETTER_AUTH_URL=http://localhost:3000 \
+  -e BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true \
   whitehead-church-app
 ```
+
+The application will be available at [http://localhost:3000](http://localhost:3000) (production mode)
 
 ## 🔧 Configuration
 
