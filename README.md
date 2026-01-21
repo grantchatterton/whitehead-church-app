@@ -156,10 +156,11 @@ The application uses MongoDB for data persistence with Mongoose ODM. Connection 
 
 **Data Models:**
 - `TimelineEvent` - Church history timeline events with title, date, and description
+- `StaffMember` - Staff members affiliated with the church including name, roles, avatar URL, etc.
 - User authentication data (managed by Better Auth)
 
 **Database Operations:**
-- Timeline events are retrieved via Mongoose queries (`TimelineEventModel.find().sort()`)
+- Timeline events and staff members are retrieved via Mongoose queries
 - All models use TypeScript interfaces for type safety
 - Connection pooling and caching prevent redundant database connections
 
@@ -179,7 +180,6 @@ All API routes use server-side data fetching with MongoDB queries and return JSO
 The authentication system is currently implemented with login and registration functionality via Better Auth. Future development will add administrative capabilities for users with admin privileges:
 
 **Planned Admin Features:**
-- **Timeline Management** - Admins will be able to add, edit, and remove timeline events directly through the website interface
 - **Content Management** - Administrative controls for managing church data stored in MongoDB
 - **Role-Based Access** - Leveraging Better Auth's authentication system to restrict administrative operations to authorized users only
 
