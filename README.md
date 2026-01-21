@@ -2,7 +2,9 @@
 
 A modern, responsive church website built with Next.js 16, React 19, and TypeScript. This application serves as the online presence for Whitehead Baptist Church, nestled in the Blue Ridge Mountains of Alleghany County, North Carolina.
 
-## 🌟 Features
+**Live Website**: [https://whiteheadchurch.org](https://whiteheadchurch.org)
+
+## Features
 
 - **Home Page** - Welcome message with church location and service information
 - **About Page** - Church history, interactive timeline, and staff directory
@@ -11,18 +13,14 @@ A modern, responsive church website built with Next.js 16, React 19, and TypeScr
 - **Responsive Design** - Built with React Bootstrap for mobile-first accessibility
 - **Dark Mode** - Modern dark theme for comfortable viewing
 - **MongoDB Integration** - Database support for user authentication and future features
-- **Docker Support** - Containerized deployment with Docker and Docker Compose
 
-## 📋 Prerequisites
+## Prerequisites
 
-Before you begin, ensure you have the following installed:
-
-- **Node.js** v20 or higher (specifically tested with v20.19.6)
+- **Node.js** v20 or higher
 - **npm** v10.8.2 or higher
-- **Docker** (optional, for containerized deployment)
-- **Docker Compose** (optional, for MongoDB service)
+- **Docker** (for containerized deployment)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -37,23 +35,18 @@ cd whitehead-church-app
 npm install
 ```
 
-This will install approximately 400 packages and takes 15-40 seconds.
-
 ### Environment Variables
 
-Create a `.env.local` file in the root directory with the following variables:
+Create a `.env.local` file in the root directory:
 
 ```env
-# MongoDB Connection
 MONGODB_URI=mongodb://localhost:27017/whitehead-church
-
-# Better Auth Configuration
 BETTER_AUTH_SECRET=your-secret-key-here
 BETTER_AUTH_URL=http://localhost:5000
 BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true
 ```
 
-> **Note**: Generate a secure random string for `BETTER_AUTH_SECRET`. You can use: `openssl rand -base64 32`
+> **Note**: Generate a secure random string for `BETTER_AUTH_SECRET` using: `openssl rand -base64 32`
 
 ### Development
 
@@ -65,8 +58,6 @@ npm run dev
 
 The application will be available at [http://localhost:5000](http://localhost:5000)
 
-> **Note**: The development server runs on port 5000, while production builds run on port 3000.
-
 ### Building for Production
 
 Build the application:
@@ -74,8 +65,6 @@ Build the application:
 ```bash
 npm run build
 ```
-
-Build time: ~10 seconds using Turbopack. This generates optimized static pages and API routes.
 
 Start the production server:
 
@@ -87,221 +76,99 @@ The production server will run on [http://localhost:3000](http://localhost:3000)
 
 ### Linting
 
-Run ESLint to check code quality:
+Run ESLint:
 
 ```bash
 npm run lint
 ```
 
-## 🗂️ Project Structure
+## Deployment
+
+The application is deployed and hosted on the **DigitalOcean App Platform** using a Docker container.
+
+### Deployment Process
+
+The live site at [https://whiteheadchurch.org](https://whiteheadchurch.org) is automatically deployed from this repository using DigitalOcean's App Platform. The platform:
+
+1. Builds the Docker image using the `Dockerfile`
+2. Runs the container with required environment variables
+3. Manages SSL certificates and domain routing
+4. Handles auto-scaling and zero-downtime deployments
+
+### Docker Build
+
+Build the Docker image:
+
+```bash
+docker build -t whitehead-church-app .
+```
+
+Run the container with environment variables:
+
+```bash
+docker run -p 3000:3000 \
+  -e MONGODB_URI=your-mongodb-uri \
+  -e BETTER_AUTH_SECRET=your-secret-key \
+  -e BETTER_AUTH_URL=https://whiteheadchurch.org \
+  -e BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true \
+  whitehead-church-app
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
 
 ```
 whitehead-church-app/
 ├── src/
 │   ├── app/                      # Next.js App Router
 │   │   ├── (home)/              # Home page route group
-│   │   │   └── page.tsx
-│   │   ├── (info)/              # Info pages route group
-│   │   │   ├── about/           # About page with history & staff
-│   │   │   ├── gallery/         # Photo gallery page
-│   │   │   └── layout.tsx       # Shared layout for info pages
+│   │   ├── (info)/              # Info pages (about, gallery)
 │   │   ├── api/                 # API routes
 │   │   ├── login/               # Login page
 │   │   ├── logout/              # Logout handler
 │   │   ├── register/            # Registration page
-│   │   ├── layout.tsx           # Root layout (navbar/footer)
-│   │   ├── loading.tsx          # Loading UI component
+│   │   ├── layout.tsx           # Root layout
 │   │   └── globals.css          # Global styles
 │   ├── components/              # React components
-│   │   ├── about/               # About page components
-│   │   ├── auth/                # Authentication components
-│   │   ├── gallery/             # Gallery carousel
-│   │   ├── home/                # Home page components
-│   │   └── shared/              # Reusable UI components
 │   ├── lib/                     # Data and configuration
-│   │   ├── auth.ts              # Better Auth server setup
-│   │   ├── auth-client.ts       # Better Auth client
-│   │   ├── auth-config.ts       # Auth configuration
-│   │   ├── gallery.ts           # Gallery image data
-│   │   ├── mongodb.ts           # MongoDB connection
-│   │   └── staff.ts             # Staff member data
 │   └── models/                  # TypeScript interfaces
-│       ├── GalleryImage.ts
-│       ├── StaffMember.ts
-│       └── ...
-├── public/                      # Static assets (images)
-├── Dockerfile                   # Multi-stage Docker build
-├── compose.yml                  # Docker Compose configuration
-├── next.config.ts               # Next.js configuration
-├── tsconfig.json                # TypeScript configuration
-├── eslint.config.mjs            # ESLint configuration
-├── .prettierrc.json             # Prettier configuration
+├── public/                      # Static assets
+├── Dockerfile                   # Docker configuration
 └── package.json                 # Dependencies and scripts
 ```
 
-## 🛠️ Technology Stack
+## Technology Stack
 
-### Core Framework
-- **Next.js 16.1.1** - React framework with App Router
-- **React 19.2.3** - UI library
+- **Next.js 16** - React framework with App Router
+- **React 19** - UI library
 - **TypeScript 5** - Type-safe development
+- **React Bootstrap** - Component library
+- **Bootstrap 5** - CSS framework with dark mode
+- **Better Auth** - Authentication solution
+- **MongoDB** - Database via Mongoose ODM
+- **Docker** - Containerization
 
-### UI & Styling
-- **React Bootstrap 2.10.10** - Component library
-- **Bootstrap 5.3.8** - CSS framework with dark mode
+## Development Guidelines
 
-### Authentication & Database
-- **Better Auth 1.4.16** - Modern authentication solution
-- **MongoDB 9.1.4** - Database via Mongoose ODM
-
-### Development Tools
-- **ESLint 9** - Code linting with Next.js and Prettier configs
-- **Prettier 3.7.4** - Code formatting with import sorting
-- **date-fns 4.1.0** - Date formatting utilities
-
-### Deployment
-- **Docker** - Containerization with Node 20 Alpine
-- **Turbopack** - Fast builds and hot module replacement
-
-## 🐳 Docker Deployment
-
-### Using Docker Compose (Recommended)
-
-1. Create a `.env` file for Docker Compose with your environment variables:
-```env
-MONGODB_URI=mongodb://db:27017/whitehead-church
-BETTER_AUTH_SECRET=your-secret-key-here
-BETTER_AUTH_URL=http://localhost:3000
-BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true
-```
-
-2. Start MongoDB and build the application:
-```bash
-docker compose up -d
-```
-
-This will:
-- Start MongoDB on port 27017
-- Build and run the Next.js application on port 3000 (production)
-
-3. Stop the services:
-```bash
-docker compose down
-```
-
-### Using Docker Only
-
-1. Build the image:
-```bash
-docker build -t whitehead-church-app .
-```
-
-> **Note**: Build-time environment variables are optional. The Dockerfile accepts them but it's more secure to use runtime variables.
-
-2. Run the container with environment variables:
-```bash
-docker run -p 3000:3000 \
-  -e MONGODB_URI=mongodb://host.docker.internal:27017/whitehead-church \
-  -e BETTER_AUTH_SECRET=your-secret-key \
-  -e BETTER_AUTH_URL=http://localhost:3000 \
-  -e BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true \
-  whitehead-church-app
-```
-
-The application will be available at [http://localhost:3000](http://localhost:3000) (production mode)
-
-## 🔧 Configuration
-
-### Next.js Configuration
-
-The application uses standalone output mode for optimized Docker deployments:
-
-```typescript
-// next.config.ts
-const nextConfig: NextConfig = {
-  output: "standalone",
-  allowedDevOrigins: ["*"],
-};
-```
-
-### TypeScript Configuration
-
-- **Strict mode** enabled for type safety
-- **Path alias**: `@/*` resolves to `src/*`
-- **Target**: ES2017 with modern module resolution
-
-### ESLint & Prettier
-
-- **Flat config** (eslint.config.mjs) with Next.js and Prettier integration
-- **Import sorting** via @trivago/prettier-plugin-sort-imports
-- **Auto-formatting** on save (recommended in VS Code)
-
-## 📝 Development Guidelines
-
-### Component Patterns
-
-- All components use **functional components** with TypeScript
+- All components use functional components with TypeScript
 - Client components require `"use client"` directive
-- Props are typed inline, not with separate interfaces
+- Use React Bootstrap for UI components
+- Bootstrap CSS classes for utilities
+- Dark mode via `data-bs-theme="dark"`
+- Path alias `@/*` resolves to `src/*`
 
-Example:
-```tsx
-export default function Component({
-  prop1,
-  prop2 = "default",
-}: {
-  prop1: string;
-  prop2?: string;
-}) {
-  // Component logic
-}
-```
-
-### Styling Conventions
-
-- **Primary**: React Bootstrap components
-- **Utilities**: Bootstrap CSS classes (e.g., `mb-4`, `p-4`)
-- **Theme**: Dark mode via `data-bs-theme="dark"`
-- **Avoid**: Mixing Tailwind classes with Bootstrap
-
-### Import Order
-
-Automatically enforced by Prettier:
-1. Server-only directive
-2. Built-in modules
-3. React/Next.js
-4. React Bootstrap
-5. Third-party packages
-6. `@/*` imports (internal)
-7. Relative imports
-
-## 🧪 Testing & Validation
-
-No test framework is currently configured. Manual validation is required:
-
-1. **Build**: `npm run build` must succeed without errors
-2. **Lint**: `npm run lint` must pass (warnings acceptable)
-3. **Runtime**: Dev server must start and pages must load
-
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Create a feature branch
 3. Make your changes following the development guidelines
 4. Run linting: `npm run lint`
 5. Build the project: `npm run build`
-6. Commit your changes (`git commit -m 'Add amazing feature'`)
-7. Push to the branch (`git push origin feature/amazing-feature`)
+6. Commit your changes
+7. Push to the branch
 8. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is private and proprietary to Whitehead Baptist Church.
-
-## 📧 Contact
-
-For questions or support, please contact the church administration.
-
----
-
-**Built with ❤️ for Whitehead Baptist Church**
