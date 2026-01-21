@@ -8,7 +8,7 @@ import AuthForm from "@/components/auth/AuthForm";
 import { isEmailSignupDisabled } from "@/lib/auth-config";
 
 export const metadata: Metadata = {
-  title: "Register | Whitehead Baptist Church",
+  title: "Register",
   description: "Create a new account for Whitehead Baptist Church",
 };
 
