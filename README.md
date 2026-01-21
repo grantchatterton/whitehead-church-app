@@ -172,6 +172,19 @@ The application implements Next.js API routes under `src/app/api/`:
 
 All API routes use server-side data fetching with MongoDB queries and return JSON responses.
 
+## Planned Features
+
+### Administrative Operations
+
+The authentication system is currently implemented with login and registration functionality via Better Auth. Future development will add administrative capabilities for users with admin privileges:
+
+**Planned Admin Features:**
+- **Timeline Management** - Admins will be able to add, edit, and remove timeline events directly through the website interface
+- **Content Management** - Administrative controls for managing church data stored in MongoDB
+- **Role-Based Access** - Leveraging Better Auth's authentication system to restrict administrative operations to authorized users only
+
+These features will enable church administrators to maintain and update website content without requiring direct database access or code deployments.
+
 ## Development Guidelines
 
 - All components use functional components with TypeScript
