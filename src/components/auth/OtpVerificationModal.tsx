@@ -32,7 +32,7 @@ export default function OtpVerificationModal({
   }
 
   return (
-    <Modal show={show} onHide={onHide} centered>
+    <Modal show={show} onHide={onHide} centered backdrop="static">
       <Modal.Header closeButton>
         <Modal.Title>Two-Factor Authentication Required</Modal.Title>
       </Modal.Header>
@@ -85,7 +85,7 @@ export default function OtpVerificationModal({
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="outline-light" onClick={onHide}>
+        <Button variant="outline-light" onClick={onHide} disabled={loading}>
           Close
         </Button>
       </Modal.Footer>
