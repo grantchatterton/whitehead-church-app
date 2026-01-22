@@ -17,6 +17,13 @@ services:
       - key: BETTER_AUTH_ALLOW_EMAIL_SIGNUP
         value: "true"
         scope: RUN_AND_BUILD_TIME
+      - key: RESEND_API_KEY
+        value: ${RESEND_API_KEY}
+        type: SECRET
+        scope: RUN_AND_BUILD_TIME
+      - key: APP_EMAIL_ADDRESS
+        value: ${APP_EMAIL_ADDRESS}
+        scope: RUN_AND_BUILD_TIME
     http_port: 3000
     github:
       branch: main

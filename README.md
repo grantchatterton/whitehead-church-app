@@ -39,13 +39,26 @@ npm install
 Create a `.env.local` file in the root directory:
 
 ```env
+# MongoDB Configuration
 MONGODB_URI=mongodb://localhost:27017/whitehead-church
+
+# Better Auth Configuration
 BETTER_AUTH_SECRET=your-secret-key-here
 BETTER_AUTH_URL=http://localhost:5000
 BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true
+
+# Email Service Configuration (Resend)
+RESEND_API_KEY=your-resend-api-key
+APP_EMAIL_ADDRESS=noreply@whiteheadchurch.org
 ```
 
-> **Note**: Generate a secure random string for `BETTER_AUTH_SECRET` using: `openssl rand -base64 32`
+**Environment Variable Details:**
+- `MONGODB_URI` - MongoDB connection string for user data and timeline storage
+- `BETTER_AUTH_SECRET` - Secure secret key for authentication (generate with: `openssl rand -base64 32`)
+- `BETTER_AUTH_URL` - Base URL for authentication callbacks
+- `BETTER_AUTH_ALLOW_EMAIL_SIGNUP` - Toggle email signup feature (set to `"false"` to disable)
+- `RESEND_API_KEY` - API key for Resend email service (required for email notifications)
+- `APP_EMAIL_ADDRESS` - Sender email address for automated emails (e.g., verification emails)
 
 ### Development
 
@@ -146,6 +159,9 @@ whitehead-church-app/
 - **Bootstrap 5** - CSS framework
 - **Better Auth** - Authentication solution
 - **MongoDB** - Database via Mongoose ODM
+- **Resend** - Email service provider with React email templates
+- **@react-email/components** - React components for building email templates
+- **date-fns** - Date utility library
 - **Docker** - Containerization
 
 ## Data Storage & API Routes
@@ -160,12 +176,20 @@ The application uses MongoDB for data persistence with Mongoose ODM. Connection 
 - `TimelineEvent` - Church history timeline events with title, date, and description
 - User authentication data (managed by Better Auth)
 
+### Email Service
+
+The application integrates **Resend** for sending transactional emails with React-based email templates.
+
+Email functionality requires:
+- Valid `RESEND_API_KEY` environment variable
+- `APP_EMAIL_ADDRESS` configured for the sender address
+
 ### API Routes
 
 The application implements Next.js API routes under `src/app/api/`:
 
 - **`/api/timeline`** - GET endpoint that retrieves timeline events from MongoDB, sorted chronologically
-- **`/api/auth/[...all]`** - Better Auth handler for authentication operations (login, register, logout)
+- **`/api/auth/[...all]`** - Better Auth handler for authentication operations (login, register, logout, email verification)
 
 All API routes use server-side data fetching with MongoDB queries and return JSON responses.
 
