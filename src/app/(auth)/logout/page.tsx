@@ -20,11 +20,7 @@ export default function LogoutPage() {
     async function handleLogout() {
       try {
         await signOut();
-
-        // Redirect to home page after successful logout
-        setTimeout(() => {
-          router.push("/");
-        }, 1500);
+        router.push("/");
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "An error occurred during logout"
