@@ -14,7 +14,7 @@ export async function sendEmail({
   react: React.ReactNode;
 }) {
   return resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: process.env.APP_EMAIL_ADDRESS!,
     to,
     subject,
     react,
