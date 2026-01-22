@@ -9,10 +9,14 @@ import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
 import Stack from "react-bootstrap/Stack";
 
-import { signIn, signUp } from "@/lib/auth-client";
+import { authClient, signIn, signUp } from "@/lib/auth-client";
+
+import EmailVerificationModal from "./EmailVerificationModal";
+import EnableTwoFactorModal from "./EnableTwoFactorModal";
+import OtpVerificationModal from "./OtpVerificationModal";
+import RegistrationSuccessModal from "./RegistrationSuccessModal";
 
 interface AuthFormProps {
   mode: "register" | "login";
@@ -21,15 +25,28 @@ interface AuthFormProps {
 
 export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
   const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+
   const [showRegistrationSuccessModal, setShowRegistrationSuccessModal] =
     useState(false);
   const [showEmailVerificationModal, setShowEmailVerificationModal] =
     useState(false);
+  const [showEnableTwoFactorModal, setShowEnableTwoFactorModal] =
+    useState(false);
+  const [showOtpVerificationModal, setShowOtpVerificationModal] =
+    useState(false);
+
+  const [enableTwoFactorError, setEnableTwoFactorError] = useState("");
+  const [enableTwoFactorLoading, setEnableTwoFactorLoading] = useState(false);
+
+  const [otpError, setOtpError] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
 
   const isRegister = mode === "register";
 
@@ -44,16 +61,19 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
       return;
     }
 
+    // Confirm password check
     if (isRegister && !confirmPassword) {
       setError("All fields are required");
       return;
     }
 
+    // Password match check
     if (isRegister && password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
 
+    // Password strength check (example: minimum 8 characters)
     if (password.length < 8) {
       setError("Password must be at least 8 characters long");
       return;
@@ -61,45 +81,111 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
 
     setLoading(true);
 
-    try {
-      if (isRegister) {
-        const result = await signUp.email({
+    if (isRegister) {
+      await signUp.email(
+        {
           email,
           password,
           name: email.split("@")[0], // Use email prefix as default name
-        });
-        if (result.error) {
-          setError(result.error.message || "Registration failed");
-        } else {
-          setShowRegistrationSuccessModal(true);
+        },
+        {
+          onSuccess() {
+            setShowRegistrationSuccessModal(true);
+          },
+          onError(context) {
+            setError(context.error.message || "Registration failed");
+          },
         }
-      } else {
-        const result = await signIn.email({
+      );
+    } else {
+      await signIn.email(
+        {
           email,
           password,
-        });
-        if (result.error) {
-          if (result.error.status === 403) {
-            setShowEmailVerificationModal(true);
-          } else {
-            setError(result.error.message || "Login failed");
-          }
-        } else {
-          router.push("/");
+        },
+        {
+          onSuccess(context) {
+            if (context.data.twoFactorRedirect) {
+              authClient.twoFactor.sendOtp(
+                {},
+                {
+                  onSuccess() {
+                    setShowOtpVerificationModal(true);
+                  },
+                  onError(sendError) {
+                    setError(sendError.error.message || "Failed to send OTP.");
+                  },
+                }
+              );
+            } else {
+              setShowEnableTwoFactorModal(true);
+            }
+          },
+          onError(context) {
+            // Handle unverified email
+            if (context.error.status === 403) {
+              setShowEmailVerificationModal(true);
+            } else {
+              setError(context.error.message || "Login failed");
+            }
+          },
         }
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : `An error occurred during ${isRegister ? "registration" : "login"}`
       );
-    } finally {
-      setLoading(false);
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
     }
+
+    setLoading(false);
+  }
+
+  async function handleOtpSubmit(code: string, trustDevice: boolean) {
+    setOtpError("");
+    setOtpLoading(true);
+
+    await authClient.twoFactor.verifyOtp(
+      {
+        code,
+        trustDevice,
+      },
+      {
+        onSuccess() {
+          // Redirect to home or dashboard after successful OTP verification
+          router.push("/");
+        },
+        onError(context) {
+          setOtpError(
+            context.error.message || "Invalid OTP. Please try again."
+          );
+        },
+      }
+    );
+
+    setOtpLoading(false);
+  }
+
+  async function handleEnableTwoFactor() {
+    setEnableTwoFactorError("");
+    setEnableTwoFactorLoading(true);
+
+    await authClient.twoFactor.enable(
+      { password },
+      {
+        onSuccess() {
+          setShowEnableTwoFactorModal(false);
+          setShowOtpVerificationModal(true);
+        },
+        onError(context) {
+          setEnableTwoFactorError(
+            context.error.message ||
+              "Failed to enable two-factor authentication."
+          );
+        },
+      }
+    );
+
+    setEnableTwoFactorLoading(false);
+  }
+
+  function handleSkipEnableTwoFactor() {
+    router.push("/");
   }
 
   return (
@@ -128,6 +214,7 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
               <Form.Label htmlFor="email">Email Address</Form.Label>
               <Form.Control
                 id="email"
+                name="email"
                 type="email"
                 placeholder="Enter your email"
                 value={email}
@@ -141,6 +228,7 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
               <Form.Label htmlFor="password">Password</Form.Label>
               <Form.Control
                 id="password"
+                name="password"
                 type="password"
                 placeholder={
                   isRegister
@@ -166,6 +254,7 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
                 </Form.Label>
                 <Form.Control
                   id="confirmPassword"
+                  name="confirmPassword"
                   type="password"
                   placeholder="Confirm your password"
                   value={confirmPassword}
@@ -211,49 +300,35 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
         </p>
       </div>
 
-      {/* Registration Success Modal */}
-      <Modal
+      <RegistrationSuccessModal
         show={showRegistrationSuccessModal}
         onHide={() => setShowRegistrationSuccessModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Successfully Registered</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Please proceed to the login page to continue.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Link className="btn btn-outline-light" href="/login">
-            Go to Login
-          </Link>
-        </Modal.Footer>
-      </Modal>
+      />
 
-      {/* Email Verification Required Modal */}
-      <Modal
+      <EmailVerificationModal
         show={showEmailVerificationModal}
         onHide={() => setShowEmailVerificationModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Email Verification Required</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            Your email address is not verified. Please check your inbox for a
-            link to do so.
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="outline-light"
-            onClick={() => setShowEmailVerificationModal(false)}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      />
+
+      <EnableTwoFactorModal
+        show={showEnableTwoFactorModal}
+        loading={enableTwoFactorLoading}
+        error={enableTwoFactorError}
+        onEnable={handleEnableTwoFactor}
+        onSkip={handleSkipEnableTwoFactor}
+      />
+
+      <OtpVerificationModal
+        show={showOtpVerificationModal}
+        onHide={() => {
+          setShowOtpVerificationModal(false);
+          setOtpError("");
+          setOtpLoading(false);
+        }}
+        onSubmit={handleOtpSubmit}
+        error={otpError}
+        loading={otpLoading}
+      />
     </Container>
   );
 }
