@@ -17,6 +17,9 @@ services:
       - key: BETTER_AUTH_ALLOW_EMAIL_SIGNUP
         value: "true"
         scope: RUN_AND_BUILD_TIME
+      - key: BETTER_AUTH_APP_NAME
+        value: ${BETTER_AUTH_APP_NAME}
+        scope: RUN_AND_BUILD_TIME
       - key: RESEND_API_KEY
         value: ${RESEND_API_KEY}
         type: SECRET
