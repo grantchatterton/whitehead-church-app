@@ -23,6 +23,7 @@ jobs:
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           BETTER_AUTH_ALLOW_EMAIL_SIGNUP: ${{ env.BETTER_AUTH_ALLOW_EMAIL_SIGNUP }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          APP_EMAIL_ADDRESS: ${{ secrets.APP_EMAIL_ADDRESS }}
         with:
           deploy_pr_preview: "true"
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
