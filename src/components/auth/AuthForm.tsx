@@ -9,6 +9,7 @@ import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 import Stack from "react-bootstrap/Stack";
 
 import { signIn, signUp } from "@/lib/auth-client";
@@ -25,7 +26,10 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [showRegistrationSuccessModal, setShowRegistrationSuccessModal] =
+    useState(false);
+  const [showEmailVerificationModal, setShowEmailVerificationModal] =
+    useState(false);
 
   const isRegister = mode === "register";
 
@@ -33,7 +37,6 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
     e.preventDefault();
 
     setError("");
-    setSuccess(false);
 
     // Validation
     if (!email || !password) {
@@ -65,37 +68,24 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
           password,
           name: email.split("@")[0], // Use email prefix as default name
         });
-
         if (result.error) {
           setError(result.error.message || "Registration failed");
         } else {
-          setSuccess(true);
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-
-          // Redirect to home page after successful registration
-          setTimeout(() => {
-            router.push("/");
-          }, 2000);
+          setShowRegistrationSuccessModal(true);
         }
       } else {
         const result = await signIn.email({
           email,
           password,
         });
-
         if (result.error) {
-          setError(result.error.message || "Login failed");
+          if (result.error.status === 403) {
+            setShowEmailVerificationModal(true);
+          } else {
+            setError(result.error.message || "Login failed");
+          }
         } else {
-          setSuccess(true);
-          setEmail("");
-          setPassword("");
-
-          // Redirect to home page after successful login
-          setTimeout(() => {
-            router.push("/");
-          }, 2000);
+          router.push("/");
         }
       }
     } catch (err) {
@@ -106,6 +96,9 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
       );
     } finally {
       setLoading(false);
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     }
   }
 
@@ -126,13 +119,6 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
         {error && (
           <Alert variant="danger" dismissible onClose={() => setError("")}>
             {error}
-          </Alert>
-        )}
-
-        {success && (
-          <Alert variant="success">
-            {isRegister ? "Account created" : "Logged in"} successfully!
-            Redirecting...
           </Alert>
         )}
 
@@ -224,6 +210,50 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
           )}
         </p>
       </div>
+
+      {/* Registration Success Modal */}
+      <Modal
+        show={showRegistrationSuccessModal}
+        onHide={() => setShowRegistrationSuccessModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Successfully Registered</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Please proceed to the login page to continue.</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Link className="btn btn-outline-light" href="/login">
+            Go to Login
+          </Link>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Email Verification Required Modal */}
+      <Modal
+        show={showEmailVerificationModal}
+        onHide={() => setShowEmailVerificationModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Email Verification Required</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Your email address is not verified. Please check your inbox for a
+            link to do so.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="outline-light"
+            onClick={() => setShowEmailVerificationModal(false)}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }
