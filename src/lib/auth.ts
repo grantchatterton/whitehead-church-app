@@ -2,8 +2,10 @@ import "server-only";
 
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { twoFactor } from "better-auth/plugins";
 import type { Mongoose } from "mongoose";
 
+import EmailTwoFactorTemplate from "@/components/auth/EmailTwoFactorTemplate";
 import EmailVerificationTemplate from "@/components/auth/EmailVerificationTemplate";
 
 import { isEmailSignupDisabled } from "./auth-config";
@@ -31,4 +33,18 @@ export const auth = betterAuth({
     disableSignUp: isEmailSignupDisabled(),
     requireEmailVerification: true,
   },
+  plugins: [
+    twoFactor({
+      otpOptions: {
+        async sendOTP({ user, otp }, ctx) {
+          // send otp to user
+          void sendEmail({
+            to: user.email,
+            subject: "Your verification code",
+            react: EmailTwoFactorTemplate({ otp }),
+          });
+        },
+      },
+    }),
+  ],
 });
