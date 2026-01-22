@@ -169,8 +169,20 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
       { password },
       {
         onSuccess() {
-          setShowEnableTwoFactorModal(false);
-          setShowOtpVerificationModal(true);
+          authClient.twoFactor.sendOtp(
+            {},
+            {
+              onSuccess() {
+                setShowEnableTwoFactorModal(false);
+                setShowOtpVerificationModal(true);
+              },
+              onError() {
+                setEnableTwoFactorError(
+                  "Failed to enable two-factor authentication."
+                );
+              },
+            }
+          );
         },
         onError(context) {
           setEnableTwoFactorError(
