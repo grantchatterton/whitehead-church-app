@@ -117,7 +117,7 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
                   },
                 }
               );
-            } else {
+            } else if (!context.data.user.twoFactorEnabled) {
               setShowEnableTwoFactorModal(true);
             }
           },
