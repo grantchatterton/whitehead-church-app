@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import StaffMembersList from "@/components/about/staff/StaffMembersList";
-import TimelineContainer from "@/components/about/timeline/TimelineContainer";
 
 export const metadata: Metadata = {
   title: "About",
@@ -16,12 +16,12 @@ export default function Page() {
       <hr className="my-3" />
       <p>
         Nestled atop a quiet hill in the Blue Ridge Mountains of Alleghany
-        County, North Carolina, Whitehead Baptist Church rests in a place
-        where time seems to slow and hearts are invited to be still. Surrounded
-        by God&apos;s creation and wrapped in peaceful serenity, the church
-        offers a gentle invitation to all who pass by: come and rest. Many
-        believe there was divine guidance in the choosing of this beautiful
-        parcel of land—a place set apart for worship, fellowship, and faith.
+        County, North Carolina, Whitehead Baptist Church rests in a place where
+        time seems to slow and hearts are invited to be still. Surrounded by
+        God&apos;s creation and wrapped in peaceful serenity, the church offers
+        a gentle invitation to all who pass by: come and rest. Many believe
+        there was divine guidance in the choosing of this beautiful parcel of
+        land—a place set apart for worship, fellowship, and faith.
       </p>
       <p className="mb-3">
         As we reflect on our journey from humble beginnings to the present day,
@@ -31,7 +31,9 @@ export default function Page() {
         our history, join us in worship, and become part of our ongoing story of
         faith and fellowship.
       </p>
-      <TimelineContainer />
+      <Link href="/about/timeline" className="btn btn-outline-light mb-4">
+        View History
+      </Link>
       <StaffMembersList />
     </>
   );
