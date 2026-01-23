@@ -1,5 +1,7 @@
 import "server-only";
 
+import GalleryImageModel from "@/models/GalleryImage";
+import type { GalleryImageDTO } from "@/models/GalleryImage";
 import type { TimelineEventDTO } from "@/models/TimelineEvent";
 import TimelineEventModel from "@/models/TimelineEvent";
 
@@ -16,5 +18,16 @@ export async function getTimelineEvents(): Promise<TimelineEventDTO[]> {
     description: event.description,
     date: event.date.toString(),
     dateDisplay: event.dateDisplay,
+  }));
+}
+
+export async function getGalleryImages(): Promise<GalleryImageDTO[]> {
+  await dbConnect();
+  const galleryImages = await GalleryImageModel.find().lean();
+  return galleryImages.map((image) => ({
+    _id: image._id.toString(),
+    src: image.src,
+    alt: image.alt,
+    caption: image.caption,
   }));
 }
