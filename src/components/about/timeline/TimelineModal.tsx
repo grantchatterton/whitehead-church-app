@@ -127,7 +127,7 @@ export default function TimelineModal({
   }
 
   return (
-    <Modal show={true} onHide={handleClose} size="lg" centered>
+    <Modal show centered onHide={handleClose} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>History</Modal.Title>
       </Modal.Header>
