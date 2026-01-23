@@ -32,10 +32,7 @@ export default function RootLayout({
       <body className="position-relative min-vh-100">
         <BackgroundImage />
         <Stack direction="vertical" className="min-vh-100 p-4">
-          <AppNavbar title={title} />
-          <Container as={"main"} className="mt-auto">
-            {children}
-          </Container>
+          {children}
           <AppFooter title={title} />
         </Stack>
       </body>
