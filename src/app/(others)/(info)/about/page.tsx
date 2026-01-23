@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <h1>About Us</h1>
+      <h1 className="fs-2">About Us</h1>
       <hr className="my-3" />
       <p>
         Nestled atop a quiet hill in the Blue Ridge Mountains of Alleghany
