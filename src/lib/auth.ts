@@ -13,7 +13,7 @@ import dbConnect from "./mongodb";
 const client = ((await dbConnect()) as Mongoose).connection.getClient();
 
 export const auth = betterAuth({
-  database: mongodbAdapter(client.db()),
+  database: mongodbAdapter(client.db(), { client }),
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
       void sendEmail({
