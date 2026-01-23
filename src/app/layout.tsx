@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 
-import Container from "react-bootstrap/Container";
 import Stack from "react-bootstrap/Stack";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import AppFooter from "@/components/shared/AppFooter";
-import AppNavbar from "@/components/shared/AppNavbar";
 import BackgroundImage from "@/components/shared/BackgroundImage";
 
 import "./globals.css";
