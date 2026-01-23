@@ -28,10 +28,12 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
   const [error, setError] = useState("");
   const [showRegistrationSuccessModal, setShowRegistrationSuccessModal] =
     useState(false);
-  const [showEmailVerificationModal, setShowEmailVerificationModal] =
-    useState(false);
 
   const isRegister = mode === "register";
+
+  function showEmailVerificationModal() {
+    router.push("/login/email-verification-required");
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -86,7 +88,7 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
           onError(context) {
             // If email is not verified, show verification modal
             if (context.error.status === 403) {
-              setShowEmailVerificationModal(true);
+              showEmailVerificationModal();
             } else {
               setError(context.error.message || "Login failed");
             }
@@ -223,31 +225,6 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
           <Link className="btn btn-outline-light" href="/login">
             Go to Login
           </Link>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Email Verification Required Modal */}
-      <Modal
-        show={showEmailVerificationModal}
-        onHide={() => setShowEmailVerificationModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Email Verification Required</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            Your email address is not verified. Please check your inbox for a
-            link to do so.
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="outline-light"
-            onClick={() => setShowEmailVerificationModal(false)}
-          >
-            Close
-          </Button>
         </Modal.Footer>
       </Modal>
     </Container>
