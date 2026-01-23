@@ -18,8 +18,10 @@ export default function EmailVerificationRequiredModal() {
         <Modal.Title>Email Verification Required</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Please verify your email address to continue. Check your inbox for a
-        verification email.
+        <p>
+          Please verify your email address to continue. Check your inbox for a
+          verification email.
+        </p>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-light" onClick={handleClose}>
