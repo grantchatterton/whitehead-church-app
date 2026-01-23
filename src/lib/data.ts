@@ -2,6 +2,8 @@ import "server-only";
 
 import GalleryImageModel from "@/models/GalleryImage";
 import type { GalleryImageDTO } from "@/models/GalleryImage";
+import type { ServiceTimeDTO } from "@/models/ServiceTime";
+import ServiceTimeModel from "@/models/ServiceTime";
 import type { TimelineEventDTO } from "@/models/TimelineEvent";
 import TimelineEventModel from "@/models/TimelineEvent";
 
@@ -32,5 +34,17 @@ export async function getGalleryImages(): Promise<GalleryImageDTO[]> {
     alt: image.alt,
     caption: image.caption,
     order: image.order,
+  }));
+}
+
+export async function getServiceTimes(): Promise<ServiceTimeDTO[]> {
+  await dbConnect();
+  const serviceTimes = await ServiceTimeModel.find().sort({ name: 1 }).lean();
+  return serviceTimes.map((serviceTime) => ({
+    _id: serviceTime._id.toString(),
+    name: serviceTime.name,
+    days: serviceTime.days,
+    startTime: serviceTime.startTime,
+    endTime: serviceTime.endTime,
   }));
 }
