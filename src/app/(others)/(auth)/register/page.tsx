@@ -14,10 +14,7 @@ export default function RegisterPage() {
     return (
       <div className="text-center">
         <h1 className="mb-4">Registration Disabled</h1>
-        <p className="mb-4">
-          Email registration is currently disabled. Please contact the church
-          office for assistance.
-        </p>
+        <p className="mb-4">Email registration is currently disabled.</p>
         <Link href="/" className="btn btn-outline-light">
           Return to Home
         </Link>

@@ -26,12 +26,16 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showRegistrationSuccessModal, setShowRegistrationSuccessModal] =
-    useState(false);
-  const [showEmailVerificationModal, setShowEmailVerificationModal] =
-    useState(false);
 
   const isRegister = mode === "register";
+
+  function showEmailVerificationModal() {
+    router.push("/login/email-verification-required");
+  }
+
+  function showRegistrationSuccessModal() {
+    router.push("/register/registration-success");
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -61,45 +65,41 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
 
     setLoading(true);
 
-    try {
-      if (isRegister) {
-        const result = await signUp.email({
-          email,
-          password,
-          name: email.split("@")[0], // Use email prefix as default name
-        });
-        if (result.error) {
-          setError(result.error.message || "Registration failed");
-        } else {
-          setShowRegistrationSuccessModal(true);
-        }
-      } else {
-        const result = await signIn.email({
-          email,
-          password,
-        });
-        if (result.error) {
-          if (result.error.status === 403) {
-            setShowEmailVerificationModal(true);
-          } else {
-            setError(result.error.message || "Login failed");
-          }
-        } else {
-          router.push("/");
-        }
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : `An error occurred during ${isRegister ? "registration" : "login"}`
-      );
-    } finally {
-      setLoading(false);
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
+    if (isRegister) {
+      await signUp.email({
+        email,
+        password,
+        name: email.split("@")[0], // Use email prefix as default name
+        fetchOptions: {
+          onSuccess() {
+            showRegistrationSuccessModal();
+          },
+          onError(context) {
+            setError(context.error.message || "Registration failed");
+          },
+        },
+      });
+    } else {
+      await signIn.email({
+        email,
+        password,
+        fetchOptions: {
+          onSuccess() {
+            router.push("/");
+          },
+          onError(context) {
+            // If email is not verified, show verification modal
+            if (context.error.status === 403) {
+              showEmailVerificationModal();
+            } else {
+              setError(context.error.message || "Login failed");
+            }
+          },
+        },
+      });
     }
+
+    setLoading(false);
   }
 
   return (
@@ -210,50 +210,6 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
           )}
         </p>
       </div>
-
-      {/* Registration Success Modal */}
-      <Modal
-        show={showRegistrationSuccessModal}
-        onHide={() => setShowRegistrationSuccessModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Successfully Registered</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Please proceed to the login page to continue.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Link className="btn btn-outline-light" href="/login">
-            Go to Login
-          </Link>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Email Verification Required Modal */}
-      <Modal
-        show={showEmailVerificationModal}
-        onHide={() => setShowEmailVerificationModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Email Verification Required</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            Your email address is not verified. Please check your inbox for a
-            link to do so.
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="outline-light"
-            onClick={() => setShowEmailVerificationModal(false)}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </Container>
   );
 }
