@@ -26,13 +26,15 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showRegistrationSuccessModal, setShowRegistrationSuccessModal] =
-    useState(false);
 
   const isRegister = mode === "register";
 
   function showEmailVerificationModal() {
     router.push("/login/email-verification-required");
+  }
+
+  function showRegistrationSuccessModal() {
+    router.push("/register/registration-success");
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -70,7 +72,7 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
         name: email.split("@")[0], // Use email prefix as default name
         fetchOptions: {
           onSuccess() {
-            setShowRegistrationSuccessModal(true);
+            showRegistrationSuccessModal();
           },
           onError(context) {
             setError(context.error.message || "Registration failed");
@@ -208,25 +210,6 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
           )}
         </p>
       </div>
-
-      {/* Registration Success Modal */}
-      <Modal
-        show={showRegistrationSuccessModal}
-        onHide={() => setShowRegistrationSuccessModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Successfully Registered</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Please proceed to the login page to continue.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Link className="btn btn-outline-light" href="/login">
-            Go to Login
-          </Link>
-        </Modal.Footer>
-      </Modal>
     </Container>
   );
 }
