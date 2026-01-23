@@ -23,11 +23,14 @@ export async function getTimelineEvents(): Promise<TimelineEventDTO[]> {
 
 export async function getGalleryImages(): Promise<GalleryImageDTO[]> {
   await dbConnect();
-  const galleryImages = await GalleryImageModel.find().lean();
+  const galleryImages = await GalleryImageModel.find()
+    .sort({ order: 1 })
+    .lean();
   return galleryImages.map((image) => ({
     _id: image._id.toString(),
     src: image.src,
     alt: image.alt,
     caption: image.caption,
+    order: image.order,
   }));
 }
