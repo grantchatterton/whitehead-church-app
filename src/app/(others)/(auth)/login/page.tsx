@@ -9,7 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  const signupEnabled = isEmailSignupEnabled();
-
-  return <AuthForm mode="login" allowSignup={signupEnabled} />;
+  return <AuthForm mode="login" allowSignup={isEmailSignupEnabled()} />;
 }
