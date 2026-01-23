@@ -1,21 +1,15 @@
-import dbConnect from "@/lib/mongodb";
-import ServiceTimeModel from "@/models/ServiceTime";
+import { getServiceTimes } from "@/lib/data";
 
 import HomeInfoCol from "./HomeInfoCol";
 
-export const revalidate = 3600; // Revalidate every hour
-
 export default async function HomeInfoServiceTimesCol() {
-  await dbConnect();
-  const serviceTimes = await ServiceTimeModel.find()
-    .sort({ startTime: 1 })
-    .lean();
+  const serviceTimes = await getServiceTimes();
 
   return (
     <HomeInfoCol title="Service Times" md={6}>
       <ul className="list-unstyled mb-0">
         {serviceTimes.map((service) => (
-          <li key={service._id.toString()}>
+          <li key={service._id}>
             {service.name} ({service.days.join(", ")}): {service.startTime} -{" "}
             {service.endTime}
           </li>
