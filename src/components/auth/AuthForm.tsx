@@ -61,45 +61,41 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
 
     setLoading(true);
 
-    try {
-      if (isRegister) {
-        const result = await signUp.email({
-          email,
-          password,
-          name: email.split("@")[0], // Use email prefix as default name
-        });
-        if (result.error) {
-          setError(result.error.message || "Registration failed");
-        } else {
-          setShowRegistrationSuccessModal(true);
-        }
-      } else {
-        const result = await signIn.email({
-          email,
-          password,
-        });
-        if (result.error) {
-          if (result.error.status === 403) {
-            setShowEmailVerificationModal(true);
-          } else {
-            setError(result.error.message || "Login failed");
-          }
-        } else {
-          router.push("/");
-        }
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : `An error occurred during ${isRegister ? "registration" : "login"}`
-      );
-    } finally {
-      setLoading(false);
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
+    if (isRegister) {
+      await signUp.email({
+        email,
+        password,
+        name: email.split("@")[0], // Use email prefix as default name
+        fetchOptions: {
+          onSuccess() {
+            setShowRegistrationSuccessModal(true);
+          },
+          onError(context) {
+            setError(context.error.message || "Registration failed");
+          },
+        },
+      });
+    } else {
+      await signIn.email({
+        email,
+        password,
+        fetchOptions: {
+          onSuccess() {
+            router.push("/");
+          },
+          onError(context) {
+            // If email is not verified, show verification modal
+            if (context.error.status === 403) {
+              setShowEmailVerificationModal(true);
+            } else {
+              setError(context.error.message || "Login failed");
+            }
+          },
+        },
+      });
     }
+
+    setLoading(false);
   }
 
   return (
