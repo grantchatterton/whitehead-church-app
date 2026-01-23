@@ -14,7 +14,7 @@ export default async function Page() {
 
   return (
     <>
-      <h1>Gallery</h1>
+      <h1 className="fs-2">Gallery</h1>
       <hr className="my-3" />
       <p>
         Welcome to our gallery! Here you&apos;ll find a curated selection of
