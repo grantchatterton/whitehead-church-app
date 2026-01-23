@@ -4,13 +4,12 @@ import { useState } from "react";
 
 import Image from "next/image";
 
-import Button from "react-bootstrap/Button";
 import Carousel from "react-bootstrap/Carousel";
 import Spinner from "react-bootstrap/Spinner";
 
-import type { GalleryImage } from "@/models/GalleryImage";
+import type { GalleryImageDTO } from "@/models/GalleryImage";
 
-function GalleryCarouselItemContent({ image }: { image: GalleryImage }) {
+function GalleryCarouselItemContent({ image }: { image: GalleryImageDTO }) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -24,7 +23,7 @@ function GalleryCarouselItemContent({ image }: { image: GalleryImage }) {
       )}
       <Image
         src={image.src}
-        alt={image.alt || `Gallery Image ${image.id}`}
+        alt={image.alt || `Gallery Image ${image._id}`}
         fill
         className="border-2 border-white rounded"
         onLoad={() => setIsLoading(false)}
@@ -96,7 +95,7 @@ function CarouselRightArrow({
 export default function GalleryCarousel({
   galleryImages,
 }: {
-  galleryImages: GalleryImage[];
+  galleryImages: GalleryImageDTO[];
 }) {
   const arrowWidth = 32;
   const arrowHeight = 32;
@@ -108,7 +107,7 @@ export default function GalleryCarousel({
     >
       {galleryImages.map((image) => (
         <Carousel.Item
-          key={image.id}
+          key={image._id}
           style={{ height: "600px" }}
           className="position-relative"
         >
