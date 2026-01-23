@@ -67,9 +67,6 @@ interface AuthFormProps {
 export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -101,6 +98,11 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
     e.preventDefault();
 
     setError("");
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
 
     // Validation
     if (!email || !password) {
@@ -181,9 +183,8 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
             <Form.Control
               id="email"
               type="email"
+              name="email"
               placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               required
             />
@@ -194,13 +195,12 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
             <Form.Control
               id="password"
               type="password"
+              name="password"
               placeholder={
                 isRegister
                   ? "Enter password (minimum 8 characters)"
                   : "Enter your password"
               }
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
               required
             />
@@ -219,9 +219,8 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
               <Form.Control
                 id="confirmPassword"
                 type="password"
+                name="confirmPassword"
                 placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
                 disabled={loading}
                 required
               />
