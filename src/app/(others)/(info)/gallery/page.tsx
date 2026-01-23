@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import GalleryCarousel from "@/components/gallery/GalleryCarousel";
-import { getGalleryImages } from "@/lib/gallery";
+import { getGalleryImages } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Gallery",
