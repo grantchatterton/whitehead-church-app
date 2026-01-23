@@ -6,7 +6,7 @@ import type { Mongoose } from "mongoose";
 
 import EmailVerificationTemplate from "@/components/auth/EmailVerificationTemplate";
 
-import { isEmailSignupDisabled } from "./auth-config";
+import { isEmailSignupEnabled } from "./auth-config";
 import { sendEmail } from "./email";
 import dbConnect from "./mongodb";
 
@@ -27,7 +27,7 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    disableSignUp: isEmailSignupDisabled(),
+    disableSignUp: !isEmailSignupEnabled(),
     requireEmailVerification: true,
   },
 });
