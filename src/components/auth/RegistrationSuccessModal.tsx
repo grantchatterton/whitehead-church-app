@@ -15,7 +15,7 @@ export default function RegistrationSuccessModal() {
 
   return (
     <Modal show centered backdrop="static" onHide={handleClose}>
-      <Modal.Header>
+      <Modal.Header closeButton>
         <Modal.Title>Registration Successful</Modal.Title>
       </Modal.Header>
       <Modal.Body>

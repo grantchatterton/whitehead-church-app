@@ -14,7 +14,7 @@ export default function EmailVerificationRequiredModal() {
 
   return (
     <Modal show centered backdrop="static" onHide={handleClose}>
-      <Modal.Header>
+      <Modal.Header closeButton>
         <Modal.Title>Email Verification Required</Modal.Title>
       </Modal.Header>
       <Modal.Body>
