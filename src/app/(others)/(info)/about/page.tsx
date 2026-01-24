@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 
-import StaffMembersList from "@/components/about/staff/StaffMembersList";
-import LinkButton from "@/components/shared/LinkButton";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+
+import InfoPage from "@/components/ui/InfoPage";
+import LinkButton from "@/components/ui/LinkButton";
+import { getStaffMembers } from "@/lib/data";
+
+import StaffMemberCard from "./_components/StaffMemberCard";
 
 export const metadata: Metadata = {
   title: "About",
@@ -9,11 +15,11 @@ export const metadata: Metadata = {
     "Learn about the history and staff of Whitehead Baptist Church. Discover our journey from humble beginnings to the present day in the Blue Ridge Mountains.",
 };
 
-export default function Page() {
+export default async function Page() {
+  const staffMembers = await getStaffMembers();
+
   return (
-    <>
-      <h1 className="fs-2">About Us</h1>
-      <hr className="my-3" />
+    <InfoPage title="About Us">
       <p>
         Nestled atop a quiet hill in the Blue Ridge Mountains of Alleghany
         County, North Carolina, Whitehead Baptist Church rests in a place where
@@ -34,7 +40,17 @@ export default function Page() {
       <LinkButton href="/about/timeline" className="mb-4">
         View History
       </LinkButton>
-      <StaffMembersList />
-    </>
+      <Row className="g-4">
+        {staffMembers.map((staffMember) => (
+          <Col md={6} key={staffMember._id}>
+            <StaffMemberCard
+              name={staffMember.name}
+              roles={staffMember.roles}
+              avatarUrl={staffMember.avatarUrl}
+            />
+          </Col>
+        ))}
+      </Row>
+    </InfoPage>
   );
 }

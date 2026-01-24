@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 
@@ -27,35 +26,33 @@ function AuthFormContainer({
   children,
 }: AuthFormContainerProps) {
   return (
-    <Container className="py-5">
-      <div
-        className="mx-auto glass p-5"
-        style={{
-          maxWidth: "500px",
-          border: "1px solid #495057",
-          borderRadius: "8px",
-        }}
-      >
-        <h1 className="mb-4 text-center">{title}</h1>
-        {children}
-        <p className="mt-4 text-center">
-          {isRegister ? (
-            <>
-              Already have an account? <Link href="/login">Sign in here</Link>
-            </>
-          ) : (
-            <>
-              {allowSignup && (
-                <>
-                  Don&apos;t have an account?{" "}
-                  <Link href="/register">Register here</Link>
-                </>
-              )}
-            </>
-          )}
-        </p>
-      </div>
-    </Container>
+    <div
+      className="mx-auto glass p-5"
+      style={{
+        maxWidth: "500px",
+        border: "1px solid #495057",
+        borderRadius: "8px",
+      }}
+    >
+      <h1 className="mb-4 text-center">{title}</h1>
+      {children}
+      <p className="mt-4 text-center">
+        {isRegister ? (
+          <>
+            Already have an account? <Link href="/login">Sign in here</Link>
+          </>
+        ) : (
+          <>
+            {allowSignup && (
+              <>
+                Don&apos;t have an account?{" "}
+                <Link href="/register">Register here</Link>
+              </>
+            )}
+          </>
+        )}
+      </p>
+    </div>
   );
 }
 

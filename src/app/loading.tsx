@@ -1,7 +1,7 @@
 import Spinner from "react-bootstrap/Spinner";
 import Stack from "react-bootstrap/Stack";
 
-import CrossImage from "@/components/shared/CrossImage";
+import CrossImage from "@/components/ui/images/CrossImage";
 
 export default function Loading() {
   return (

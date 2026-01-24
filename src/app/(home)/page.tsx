@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 
-import HomeNavbar from "@/components/home/HomeNavbar";
-import HomeInfo from "@/components/home/info/HomeInfo";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
+import Row from "react-bootstrap/Row";
+import Stack from "react-bootstrap/Stack";
+
+import { AppNavbarItems } from "@/components/ui/AppNavbar";
+import CrossImage from "@/components/ui/images/CrossImage";
+import { getServiceTimes } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -9,12 +16,51 @@ export const metadata: Metadata = {
     "Welcome to Whitehead Baptist Church, located in the Blue Ridge Mountains of North Carolina. Join us for worship and fellowship.",
 };
 
-export default function Page() {
+const appTitle = process.env.NEXT_PUBLIC_APP_TITLE!;
+const address = "5444 Pine Swamp Rd, Sparta, North Carolina, 28675";
+
+export default async function Page() {
+  const serviceTimes = await getServiceTimes();
+
   return (
-    <div className="text-center">
-      <HomeNavbar />
-      <hr className="mt-0" />
-      <HomeInfo />
-    </div>
+    <Stack as="main">
+      <Container className="m-auto">
+        <Stack
+          direction="horizontal"
+          className="justify-content-center p-2"
+          gap={2}
+        >
+          <CrossImage width={96} height={96} />
+          <h1 className="fw-bold mb-0">{appTitle}</h1>
+        </Stack>
+        <Navbar className="justify-content-center mt-3">
+          <AppNavbarItems />
+        </Navbar>
+        <hr className="mt-0" />
+        <Row className="mx-auto">
+          <Col className="text-center mb-4 mb-md-0" md={6}>
+            <h3 className="mb-2">Location</h3>
+            <a
+              className="mb-0"
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`}
+              target="_blank"
+            >
+              {address}
+            </a>
+          </Col>
+          <Col className="text-center" md={6}>
+            <h3 className="mb-2">Service Times</h3>
+            <ul className="list-unstyled mb-0">
+              {serviceTimes.map((service) => (
+                <li key={service._id}>
+                  {service.name} ({service.days.join(", ")}):{" "}
+                  {service.startTime} - {service.endTime}
+                </li>
+              ))}
+            </ul>
+          </Col>
+        </Row>
+      </Container>
+    </Stack>
   );
 }

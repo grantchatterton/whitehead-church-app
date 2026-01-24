@@ -4,7 +4,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import type { Mongoose } from "mongoose";
 
-import EmailVerificationTemplate from "@/components/auth/EmailVerificationTemplate";
+import EmailVerificationTemplate from "@/components/ui/EmailVerificationTemplate";
 
 import { isEmailSignupEnabled } from "./auth-config";
 import { sendEmail } from "./email";

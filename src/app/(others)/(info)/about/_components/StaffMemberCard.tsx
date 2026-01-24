@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import Card from "react-bootstrap/Card";
 
-import DefaultAvatar from "@/components/shared/DefaultAvatar";
+import DefaultAvatarImage from "@/components/ui/images/DefaultAvatarImage";
 
 export default function StaffMemberCard({
   name,
@@ -30,7 +30,7 @@ export default function StaffMemberCard({
             className="rounded-circle mb-2"
           />
         ) : (
-          <DefaultAvatar width={avatarWidth} height={avatarHeight} />
+          <DefaultAvatarImage width={avatarWidth} height={avatarHeight} />
         )}
         <Card.Title>{name}</Card.Title>
         <Card.Subtitle className="text-muted">{roles.join(", ")}</Card.Subtitle>

@@ -1,4 +1,4 @@
-import AppModal from "../modals/AppModal";
+import AppModal from "./AppModal";
 
 export default function RegistrationSuccessModal() {
   return (
