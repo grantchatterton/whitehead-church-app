@@ -31,7 +31,7 @@ export default async function Page() {
           gap={2}
         >
           <CrossImage width={96} height={96} />
-          <h1 className="fw-bold mb-0">{appTitle}</h1>
+          <h1 className="fw-bold text-center mb-0">{appTitle}</h1>
         </Stack>
         <Navbar className="justify-content-center mt-3">
           <AppNavbarItems />
