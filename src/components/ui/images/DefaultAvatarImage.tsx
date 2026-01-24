@@ -1,4 +1,4 @@
-export default function DefaultAvatar({
+export default function DefaultAvatarImage({
   width = 150,
   height = 150,
 }: {
