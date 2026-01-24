@@ -137,30 +137,42 @@ whitehead-church-app/
 ├── src/
 │   ├── app/                      # Next.js App Router
 │   │   ├── (home)/              # Home page route group
-│   │   │   ├── layout.tsx       # Home layout with navbar
-│   │   │   └── page.tsx         # Home page
+│   │   │   ├── layout.tsx       # Home layout
+│   │   │   └── page.tsx         # Home page with inline service times and location
 │   │   ├── (others)/            # Other pages route group
+│   │   │   ├── layout.tsx       # Shared layout with AppNavbar
 │   │   │   ├── (auth)/          # Authentication route group
 │   │   │   │   ├── login/       # Login page with email verification modal
 │   │   │   │   ├── logout/      # Logout handler
 │   │   │   │   └── register/    # Registration page with success modal
 │   │   │   ├── (info)/          # Info pages route group
 │   │   │   │   ├── about/       # About page with timeline modal
+│   │   │   │   │   ├── _components/  # Page-specific components (StaffMemberCard)
+│   │   │   │   │   └── @modal/       # Parallel route for timeline modal
 │   │   │   │   └── gallery/     # Gallery page
+│   │   │   │       └── _components/  # Page-specific components (GalleryCarousel)
 │   │   │   └── user/            # User-related pages
 │   │   │       └── settings/    # User settings page (protected)
 │   │   ├── api/                 # API routes
 │   │   │   └── auth/[...all]/   # Better Auth handler
-│   │   ├── layout.tsx           # Root layout with footer
+│   │   ├── layout.tsx           # Root layout with footer and BackgroundImage
 │   │   ├── loading.tsx          # Loading UI
 │   │   └── globals.css          # Global styles
-│   ├── components/              # React components (23 files)
-│   │   ├── about/               # About page components (staff, timeline)
-│   │   ├── auth/                # Authentication components (forms, modals, email templates)
-│   │   ├── gallery/             # Gallery carousel component
-│   │   ├── home/                # Home page components (navbar, info sections)
-│   │   ├── modals/              # Shared modal component
-│   │   └── shared/              # Reusable UI (navbar, footer, images, buttons)
+│   ├── components/              # Reusable UI components
+│   │   └── ui/                  # Shared UI components library
+│   │       ├── AppFooter.tsx    # Site footer with session info
+│   │       ├── AppNavbar.tsx    # Main navigation bar with AppNavbarItems
+│   │       ├── AuthForm.tsx     # Authentication form component
+│   │       ├── InfoPage.tsx     # Wrapper component for info pages
+│   │       ├── LinkButton.tsx   # Link styled as button
+│   │       ├── EmailVerificationTemplate.tsx  # Email template for verification
+│   │       ├── images/          # Image components
+│   │       │   ├── CrossImage.tsx        # Church cross image
+│   │       │   └── DefaultAvatarImage.tsx  # Default avatar SVG
+│   │       └── modals/          # Modal components
+│   │           ├── AppModal.tsx                    # Generic modal wrapper
+│   │           ├── EmailVerificationRequiredModal.tsx
+│   │           └── RegistrationSuccessModal.tsx
 │   ├── lib/                     # Data and configuration (6 files)
 │   │   ├── auth.ts              # Better Auth server configuration
 │   │   ├── auth-client.ts       # Better Auth client configuration
@@ -178,6 +190,13 @@ whitehead-church-app/
 ├── compose.yml                  # Docker Compose with MongoDB
 └── package.json                 # Dependencies and scripts
 ```
+
+### Architecture Highlights
+
+- **Co-located Components**: Page-specific components live in `_components/` folders next to their routes (e.g., `about/_components/StaffMemberCard.tsx`)
+- **Shared UI Library**: Reusable components centralized in `src/components/ui/` with clear organization by type
+- **Semantic HTML**: Main content uses semantic `<main>` element with Container as child, following accessibility best practices
+- **Parallel Routes**: Timeline modal uses `@modal` parallel route for clean URL-based state management
 
 ## Technology Stack
 
@@ -254,7 +273,10 @@ These features will enable church administrators to maintain and update website 
 - Use React Bootstrap for UI components
 - Bootstrap CSS classes for utility styling
 - Path alias `@/*` resolves to `src/*`
-- Parallel routes and intercepting routes used for modals (timeline, email verification, registration success)
+- Parallel routes (`@modal`) and intercepting routes (`(.)route`) used for modals
+- Page-specific components co-located in `_components/` folders next to their routes
+- Shared, reusable UI components centralized in `src/components/ui/`
+- Semantic HTML with `<main>` as parent and `<Container>` as child for proper page structure
 
 ## Contributing
 
