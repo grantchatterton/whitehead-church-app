@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 
 import AppNavbarItems from "@/components/ui/AppNavbarItems";
-import CrossImage from "@/components/ui/CrossImage";
+import CrossImage from "@/components/ui/images/CrossImage";
 import { getServiceTimes } from "@/lib/data";
 
 export const metadata: Metadata = {

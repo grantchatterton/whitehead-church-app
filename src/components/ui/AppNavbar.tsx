@@ -6,7 +6,7 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 
 import AppNavbarItems from "./AppNavbarItems";
-import CrossImage from "./CrossImage";
+import CrossImage from "./images/CrossImage";
 
 const appTitle = process.env.NEXT_PUBLIC_APP_TITLE!;
 
