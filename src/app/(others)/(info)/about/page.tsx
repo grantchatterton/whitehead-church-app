@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import StaffMembersList from "@/components/about/staff/StaffMembersList";
+import LinkButton from "@/components/shared/LinkButton";
 
 export const metadata: Metadata = {
   title: "About",
@@ -31,9 +31,9 @@ export default function Page() {
         our history, join us in worship, and become part of our ongoing story of
         faith and fellowship.
       </p>
-      <Link href="/about/timeline" className="btn btn-outline-light mb-4">
+      <LinkButton href="/about/timeline" className="mb-4">
         View History
-      </Link>
+      </LinkButton>
       <StaffMembersList />
     </>
   );

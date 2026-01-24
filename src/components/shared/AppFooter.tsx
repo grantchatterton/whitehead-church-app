@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 
 import Container from "react-bootstrap/Container";
+import Stack from "react-bootstrap/Stack";
 
+import LinkButton from "@/components/shared/LinkButton";
 import { useSession } from "@/lib/auth-client";
 
 export default function AppFooter({ title }: { title: string }) {
@@ -30,9 +31,15 @@ export default function AppFooter({ title }: { title: string }) {
             <p className="mb-2">
               Signed in as <strong>{user.email}</strong>
             </p>
-            <Link href="/logout" className="btn btn-outline-light">
-              Sign Out
-            </Link>
+            <Stack
+              direction="horizontal"
+              gap={2}
+              className="justify-content-center mb-2"
+            >
+              <LinkButton href="/logout">
+                Sign Out
+              </LinkButton>
+            </Stack>
           </>
         )}
       </Container>
