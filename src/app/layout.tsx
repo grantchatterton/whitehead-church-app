@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import Stack from "react-bootstrap/Stack";
 
+import backgroundImage from "@public/images/background.jpg";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import AppFooter from "@/components/shared/AppFooter";
-import BackgroundImage from "@/components/shared/BackgroundImage";
 
 import "./globals.css";
 
@@ -28,7 +29,13 @@ export default function RootLayout({
   return (
     <html lang="en" data-bs-theme="dark">
       <body className="position-relative min-vh-100">
-        <BackgroundImage />
+        <Image
+          src={backgroundImage}
+          alt="Background"
+          fill
+          className="background-image"
+          loading="eager"
+        />
         <Stack direction="vertical" className="min-vh-100 p-4">
           {children}
           <AppFooter />
