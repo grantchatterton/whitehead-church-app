@@ -4,7 +4,6 @@ import { useEffect } from "react";
 
 import { useRouter } from "next/navigation";
 
-import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
 
 import { authClient } from "@/lib/auth-client";
@@ -25,11 +24,11 @@ export default function LogoutPage() {
   }, [router]);
 
   return (
-    <Container className="text-center">
+    <div className="text-center">
       <Spinner animation="border" role="status" className="mb-3">
         <span className="visually-hidden">Loading...</span>
       </Spinner>
       <h1 className="fs-2">Logging out...</h1>
-    </Container>
+    </div>
   );
 }
