@@ -9,7 +9,7 @@ import BackgroundImage from "@/components/shared/BackgroundImage";
 
 import "./globals.css";
 
-const title = "Whitehead Baptist Church";
+const title = process.env.NEXT_PUBLIC_APP_TITLE!;
 const description = `Official website of the ${title}.`;
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default function RootLayout({
         <BackgroundImage />
         <Stack direction="vertical" className="min-vh-100 p-4">
           {children}
-          <AppFooter title={title} />
+          <AppFooter />
         </Stack>
       </body>
     </html>

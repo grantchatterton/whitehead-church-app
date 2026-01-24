@@ -1,13 +1,14 @@
 "use client";
 
-
 import Container from "react-bootstrap/Container";
 import Stack from "react-bootstrap/Stack";
 
 import LinkButton from "@/components/shared/LinkButton";
 import { useSession } from "@/lib/auth-client";
 
-export default function AppFooter({ title }: { title: string }) {
+const appTitle = process.env.NEXT_PUBLIC_APP_TITLE!;
+
+export default function AppFooter() {
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -15,7 +16,7 @@ export default function AppFooter({ title }: { title: string }) {
     <footer className="footer text-center mt-auto">
       <Container>
         <p className="mb-0">
-          &copy; {new Date().getFullYear()} {title}. All rights reserved.
+          &copy; {new Date().getFullYear()} {appTitle}. All rights reserved.
         </p>
         {/* <p className="mb-0">
           Made with ❤️ by{" "}
@@ -36,9 +37,7 @@ export default function AppFooter({ title }: { title: string }) {
               gap={2}
               className="justify-content-center mb-2"
             >
-              <LinkButton href="/logout">
-                Sign Out
-              </LinkButton>
+              <LinkButton href="/logout">Sign Out</LinkButton>
             </Stack>
           </>
         )}
