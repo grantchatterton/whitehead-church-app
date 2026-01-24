@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
-import LinkButton from "@/components/shared/LinkButton";
+import InfoPage from "@/components/ui/InfoPage";
+import LinkButton from "@/components/ui/LinkButton";
 import { getStaffMembers } from "@/lib/data";
 
 import StaffMemberCard from "./_components/StaffMemberCard";
-import InfoPage from "@/components/ui/InfoPage";
 
 export const metadata: Metadata = {
   title: "About",

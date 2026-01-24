@@ -6,7 +6,7 @@ import Stack from "react-bootstrap/Stack";
 import backgroundImage from "@public/images/background.jpg";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import AppFooter from "@/components/shared/AppFooter";
+import AppFooter from "@/components/ui/AppFooter";
 
 import "./globals.css";
 

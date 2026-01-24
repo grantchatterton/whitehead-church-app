@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import Card from "react-bootstrap/Card";
 
-import DefaultAvatar from "@/components/shared/DefaultAvatar";
+import DefaultAvatar from "@/components/ui/DefaultAvatar";
 
 export default function StaffMemberCard({
   name,

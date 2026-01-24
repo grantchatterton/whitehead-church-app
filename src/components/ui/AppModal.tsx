@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-import LinkButton from "../shared/LinkButton";
+import LinkButton from "./LinkButton";
 
 interface AppModalProps {
   title: string;

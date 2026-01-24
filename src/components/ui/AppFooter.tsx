@@ -3,7 +3,7 @@
 import Container from "react-bootstrap/Container";
 import Stack from "react-bootstrap/Stack";
 
-import LinkButton from "@/components/shared/LinkButton";
+import LinkButton from "@/components/ui/LinkButton";
 import { useSession } from "@/lib/auth-client";
 
 const appTitle = process.env.NEXT_PUBLIC_APP_TITLE!;

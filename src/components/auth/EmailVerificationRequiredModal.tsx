@@ -1,4 +1,4 @@
-import AppModal from "../modals/AppModal";
+import AppModal from "../ui/AppModal";
 
 export default function EmailVerificationRequiredModal() {
   return (

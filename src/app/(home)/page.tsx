@@ -6,8 +6,8 @@ import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 
-import AppNavbarItems from "@/components/shared/AppNavbarItems";
-import CrossImage from "@/components/shared/CrossImage";
+import AppNavbarItems from "@/components/ui/AppNavbarItems";
+import CrossImage from "@/components/ui/CrossImage";
 import { getServiceTimes } from "@/lib/data";
 
 export const metadata: Metadata = {
