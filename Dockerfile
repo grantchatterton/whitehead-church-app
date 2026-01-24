@@ -44,6 +44,9 @@ ENV RESEND_API_KEY=$RESEND_API_KEY
 ARG APP_EMAIL_ADDRESS
 ENV APP_EMAIL_ADDRESS=$APP_EMAIL_ADDRESS
 
+ARG NEXT_PUBLIC_APP_TITLE
+ENV NEXT_PUBLIC_APP_TITLE=$NEXT_PUBLIC_APP_TITLE
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
