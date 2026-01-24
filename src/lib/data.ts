@@ -39,7 +39,7 @@ export async function getGalleryImages(): Promise<
   Array<IGalleryImage & { _id: string }>
 > {
   await dbConnect();
-  const galleryImages = await GalleryImageModel.find()
+  const galleryImages = await GalleryImageModel.find({}, { __v: 0 })
     .sort({ order: 1 })
     .lean();
   return galleryImages.map((image) => ({
