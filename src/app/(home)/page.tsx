@@ -24,7 +24,7 @@ export default async function Page() {
 
   return (
     <Stack as="main">
-      <Container className="m-auto">
+      <Container className="m-auto py-4">
         <Stack
           direction="horizontal"
           className="justify-content-center p-2"
