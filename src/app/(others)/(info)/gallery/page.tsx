@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
-import GalleryCarousel from "@/components/gallery/GalleryCarousel";
+import InfoPage from "@/components/ui/InfoPage";
 import { getGalleryImages } from "@/lib/data";
+
+import GalleryCarousel from "./_components/GalleryCarousel";
 
 export const metadata: Metadata = {
   title: "Gallery",
@@ -13,14 +15,12 @@ export default async function Page() {
   const galleryImages = await getGalleryImages();
 
   return (
-    <>
-      <h1 className="fs-2">Gallery</h1>
-      <hr className="my-3" />
+    <InfoPage title="Gallery">
       <p>
         Welcome to our gallery! Here you&apos;ll find a curated selection of
         images showcasing our church and much more.
       </p>
       <GalleryCarousel galleryImages={galleryImages} />
-    </>
+    </InfoPage>
   );
 }
