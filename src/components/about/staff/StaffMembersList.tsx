@@ -11,7 +11,7 @@ export default async function StaffMembersList() {
   return (
     <Row className="g-4">
       {staffMembers.map((staffMember) => (
-        <Col md={6} key={staffMember._id.toString()}>
+        <Col md={6} key={staffMember._id}>
           <StaffMemberCard
             name={staffMember.name}
             roles={staffMember.roles}
