@@ -5,19 +5,24 @@ import { usePathname } from "next/navigation";
 
 import Nav from "react-bootstrap/Nav";
 
+const items = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/gallery", label: "Gallery" },
+];
+
 export default function AppNavbarItems() {
   const pathname = usePathname();
-
-  const items = [
-    { id: 1, href: "/", label: "Home" },
-    { id: 2, href: "/about", label: "About" },
-    { id: 3, href: "/gallery", label: "Gallery" },
-  ];
 
   return (
     <Nav className="gap-3" activeKey={pathname}>
       {items.map((item) => (
-        <Nav.Link key={item.id} as={Link} href={item.href} eventKey={item.href}>
+        <Nav.Link
+          key={item.href}
+          as={Link}
+          href={item.href}
+          eventKey={item.href}
+        >
           {item.label}
         </Nav.Link>
       ))}
