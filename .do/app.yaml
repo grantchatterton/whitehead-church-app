@@ -24,6 +24,9 @@ services:
       - key: APP_EMAIL_ADDRESS
         value: ${APP_EMAIL_ADDRESS}
         scope: RUN_AND_BUILD_TIME
+      - key: NEXT_PUBLIC_APP_TITLE
+        value: "Whitehead Baptist Church"
+        scope: RUN_AND_BUILD_TIME
     http_port: 3000
     github:
       branch: main
