@@ -37,6 +37,7 @@ export default function AppFooter() {
               gap={2}
               className="justify-content-center mb-2"
             >
+              <LinkButton href="/user/settings">Settings</LinkButton>
               <LinkButton href="/logout">Sign Out</LinkButton>
             </Stack>
           </>
