@@ -6,7 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 
-import AppNavbarItems from "@/components/ui/AppNavbarItems";
+import { AppNavbarItems } from "@/components/ui/AppNavbar";
 import CrossImage from "@/components/ui/images/CrossImage";
 import { getServiceTimes } from "@/lib/data";
 
