@@ -2,25 +2,25 @@ import "server-only";
 
 import mongoose from "mongoose";
 
-export interface TimelineEvent extends mongoose.Document {
+export interface ITimelineEvent {
   title: string;
   date: Date;
-  dateDisplay?: string;
   description: string;
+  dateDisplay?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export type TimelineEventDTO = Pick<
-  TimelineEvent,
-  "title" | "dateDisplay" | "description"
-> & { _id: string; date: string };
-
-const TimelineEventSchema = new mongoose.Schema<TimelineEvent>({
-  title: { type: String, required: true },
-  date: { type: Date, required: true },
-  dateDisplay: { type: String, required: false },
-  description: { type: String, required: true },
-});
+const TimelineEventSchema = new mongoose.Schema<ITimelineEvent>(
+  {
+    title: { type: String, required: true },
+    date: { type: Date, required: true },
+    description: { type: String, required: true },
+    dateDisplay: { type: String, required: false },
+  },
+  { timestamps: true }
+);
 
 export default (mongoose.models
-  .TimelineEvent as mongoose.Model<TimelineEvent>) ||
-  mongoose.model<TimelineEvent>("TimelineEvent", TimelineEventSchema);
+  .TimelineEvent as mongoose.Model<ITimelineEvent>) ||
+  mongoose.model<ITimelineEvent>("TimelineEvent", TimelineEventSchema);

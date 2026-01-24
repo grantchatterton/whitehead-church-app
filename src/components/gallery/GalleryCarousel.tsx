@@ -7,9 +7,11 @@ import Image from "next/image";
 import Carousel from "react-bootstrap/Carousel";
 import Spinner from "react-bootstrap/Spinner";
 
-import type { GalleryImageDTO } from "@/models/GalleryImage";
+import type { IGalleryImage } from "@/models/GalleryImage";
 
-function GalleryCarouselItemContent({ image }: { image: GalleryImageDTO }) {
+type IGalleryImageWithId = IGalleryImage & { _id: string };
+
+function GalleryCarouselItemContent({ image }: { image: IGalleryImageWithId }) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -95,7 +97,7 @@ function CarouselRightArrow({
 export default function GalleryCarousel({
   galleryImages,
 }: {
-  galleryImages: GalleryImageDTO[];
+  galleryImages: IGalleryImageWithId[];
 }) {
   const arrowWidth = 32;
   const arrowHeight = 32;

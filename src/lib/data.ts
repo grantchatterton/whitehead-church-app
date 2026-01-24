@@ -1,50 +1,62 @@
 import "server-only";
 
-import GalleryImageModel from "@/models/GalleryImage";
-import type { GalleryImageDTO } from "@/models/GalleryImage";
-import type { ServiceTimeDTO } from "@/models/ServiceTime";
-import ServiceTimeModel from "@/models/ServiceTime";
-import type { TimelineEventDTO } from "@/models/TimelineEvent";
-import TimelineEventModel from "@/models/TimelineEvent";
+import GalleryImageModel, { type IGalleryImage } from "@/models/GalleryImage";
+import ServiceTimeModel, { type IServiceTime } from "@/models/ServiceTime";
+import StaffMemberModel, { type IStaffMember } from "@/models/StaffMember";
+import TimelineEventModel, {
+  type ITimelineEvent,
+} from "@/models/TimelineEvent";
 
 import dbConnect from "./mongodb";
 
-export async function getTimelineEvents(): Promise<TimelineEventDTO[]> {
+export async function getTimelineEvents(): Promise<
+  Array<ITimelineEvent & { _id: string }>
+> {
   await dbConnect();
-  const timelineEvents = await TimelineEventModel.find()
+  const timelineEvents = await TimelineEventModel.find({}, { __v: 0 })
     .sort({ date: 1 })
     .lean();
   return timelineEvents.map((event) => ({
+    ...event,
     _id: event._id.toString(),
-    title: event.title,
-    description: event.description,
-    date: event.date.toString(),
-    dateDisplay: event.dateDisplay,
   }));
 }
 
-export async function getGalleryImages(): Promise<GalleryImageDTO[]> {
+export async function getStaffMembers(): Promise<
+  Array<IStaffMember & { _id: string }>
+> {
+  await dbConnect();
+  const staffMembers = await StaffMemberModel.find({}, { __v: 0 })
+    .sort({ order: 1 })
+    .lean();
+  return staffMembers.map((member) => ({
+    ...member,
+    _id: member._id.toString(),
+  }));
+}
+
+export async function getGalleryImages(): Promise<
+  Array<IGalleryImage & { _id: string }>
+> {
   await dbConnect();
   const galleryImages = await GalleryImageModel.find()
     .sort({ order: 1 })
     .lean();
   return galleryImages.map((image) => ({
+    ...image,
     _id: image._id.toString(),
-    src: image.src,
-    alt: image.alt,
-    caption: image.caption,
-    order: image.order,
   }));
 }
 
-export async function getServiceTimes(): Promise<ServiceTimeDTO[]> {
+export async function getServiceTimes(): Promise<
+  Array<IServiceTime & { _id: string }>
+> {
   await dbConnect();
-  const serviceTimes = await ServiceTimeModel.find().sort({ name: 1 }).lean();
+  const serviceTimes = await ServiceTimeModel.find({}, { __v: 0 })
+    .sort({ name: 1 })
+    .lean();
   return serviceTimes.map((serviceTime) => ({
+    ...serviceTime,
     _id: serviceTime._id.toString(),
-    name: serviceTime.name,
-    days: serviceTime.days,
-    startTime: serviceTime.startTime,
-    endTime: serviceTime.endTime,
   }));
 }

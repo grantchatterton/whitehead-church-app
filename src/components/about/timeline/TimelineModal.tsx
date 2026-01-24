@@ -10,7 +10,7 @@ import Placeholder from "react-bootstrap/Placeholder";
 
 import { format as dateFormat, parseISO } from "date-fns";
 
-import type { TimelineEventDTO } from "@/models/TimelineEvent";
+import type { ITimelineEvent } from "@/models/TimelineEvent";
 
 function TimelineModalBody({ children }: { children: React.ReactNode }) {
   return (
@@ -56,7 +56,7 @@ function TimelineModalContentSkeleton() {
 function TimelineModalContent({
   timelineEventsPromise,
 }: {
-  timelineEventsPromise: Promise<TimelineEventDTO[]>;
+  timelineEventsPromise: Promise<ITimelineEvent[]>;
 }) {
   const timelineEvents = use(timelineEventsPromise);
 
@@ -76,7 +76,7 @@ function TimelineModalContent({
             <p className="text-muted">
               {currTimelineEvent.dateDisplay ??
                 dateFormat(
-                  parseISO(currTimelineEvent.date.split("T")[0]),
+                  parseISO(currTimelineEvent.date.toString().split("T")[0]),
                   "PPP"
                 )}
             </p>
@@ -118,7 +118,7 @@ function TimelineModalContent({
 export default function TimelineModal({
   timelineEventsPromise,
 }: {
-  timelineEventsPromise: Promise<TimelineEventDTO[]>;
+  timelineEventsPromise: Promise<ITimelineEvent[]>;
 }) {
   const router = useRouter();
 

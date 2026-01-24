@@ -1,28 +1,12 @@
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
-import dbConnect from "@/lib/mongodb";
-import StaffMemberModel from "@/models/StaffMember";
+import { getStaffMembers } from "@/lib/data";
 
 import StaffMemberCard from "./StaffMemberCard";
 
 export default async function StaffMembersList() {
-  await dbConnect();
-  const staffMembers = await StaffMemberModel.aggregate([
-    {
-      $addFields: {
-        hasOrder: { $cond: [{ $ifNull: ["$order", false] }, 1, 0] },
-      },
-    },
-    {
-      $sort: {
-        hasOrder: -1, // Staff members with 'order' field come first
-        order: 1, // Then sort by 'order' ascending
-        createdAt: 1, // Finally sort by 'createdAt' ascending
-      },
-    },
-    { $project: { hasOrder: 0 } },
-  ]).exec();
+  const staffMembers = await getStaffMembers();
 
   return (
     <Row className="g-4">
