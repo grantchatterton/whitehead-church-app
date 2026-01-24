@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import AuthForm from "@/components/auth/AuthForm";
+import AuthForm from "@/components/ui/AuthForm";
 import { isEmailSignupEnabled } from "@/lib/auth-config";
 
 export const metadata: Metadata = {
