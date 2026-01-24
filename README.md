@@ -7,11 +7,12 @@ A modern, responsive church website built with Next.js 16, React 19, and TypeScr
 ## Features
 
 - **Home Page** - Welcome message with church location and service information
-- **About Page** - Church history, interactive timeline, and staff directory
+- **About Page** - Church history, interactive timeline with modal, and staff directory
 - **Photo Gallery** - Carousel showcase of church activities and facilities
-- **Authentication System** - Email-based user authentication powered by Better Auth
+- **Authentication System** - Email-based user authentication powered by Better Auth with email verification
+- **User Settings** - Protected user settings page for authenticated users
 - **Responsive Design** - Built with React Bootstrap for mobile-first accessibility
-- **MongoDB Integration** - Database support for user authentication and timeline data storage
+- **MongoDB Integration** - Database support for user authentication, timeline events, staff members, service times, and gallery images
 
 ## Prerequisites
 
@@ -39,12 +40,13 @@ npm install
 Create a `.env.local` file in the root directory:
 
 ```env
+# Application Configuration
+NEXT_PUBLIC_APP_TITLE=Whitehead Baptist Church
+
 # MongoDB Configuration
 MONGODB_URI=mongodb://localhost:27017/whitehead-church
 
 # Better Auth Configuration
-BETTER_AUTH_SECRET=your-secret-key-here
-BETTER_AUTH_URL=http://localhost:5000
 BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true
 
 # Email Service Configuration (Resend)
@@ -53,11 +55,10 @@ APP_EMAIL_ADDRESS=noreply@whiteheadchurch.org
 ```
 
 **Environment Variable Details:**
-- `MONGODB_URI` - MongoDB connection string for user data and timeline storage
-- `BETTER_AUTH_SECRET` - Secure secret key for authentication (generate with: `openssl rand -base64 32`)
-- `BETTER_AUTH_URL` - Base URL for authentication callbacks
-- `BETTER_AUTH_ALLOW_EMAIL_SIGNUP` - Toggle email signup feature (set to `"false"` to disable)
-- `RESEND_API_KEY` - API key for Resend email service (required for email notifications)
+- `NEXT_PUBLIC_APP_TITLE` - Application title displayed in the site header and metadata
+- `MONGODB_URI` - MongoDB connection string for user data, timeline events, staff members, service times, and gallery images
+- `BETTER_AUTH_ALLOW_EMAIL_SIGNUP` - Toggle email signup feature (set to `"false"` to disable registration)
+- `RESEND_API_KEY` - API key for Resend email service (required for email verification emails)
 - `APP_EMAIL_ADDRESS` - Sender email address for automated emails (e.g., verification emails)
 
 ### Development
@@ -119,10 +120,11 @@ Run the container with environment variables:
 
 ```bash
 docker run -p 3000:3000 \
+  -e NEXT_PUBLIC_APP_TITLE="Whitehead Baptist Church" \
   -e MONGODB_URI=your-mongodb-uri \
-  -e BETTER_AUTH_SECRET=your-secret-key \
-  -e BETTER_AUTH_URL=https://whiteheadchurch.org \
   -e BETTER_AUTH_ALLOW_EMAIL_SIGNUP=true \
+  -e RESEND_API_KEY=your-resend-api-key \
+  -e APP_EMAIL_ADDRESS=noreply@whiteheadchurch.org \
   whitehead-church-app
 ```
 
@@ -135,18 +137,45 @@ whitehead-church-app/
 ├── src/
 │   ├── app/                      # Next.js App Router
 │   │   ├── (home)/              # Home page route group
-│   │   ├── (info)/              # Info pages (about, gallery)
+│   │   │   ├── layout.tsx       # Home layout with navbar
+│   │   │   └── page.tsx         # Home page
+│   │   ├── (others)/            # Other pages route group
+│   │   │   ├── (auth)/          # Authentication route group
+│   │   │   │   ├── login/       # Login page with email verification modal
+│   │   │   │   ├── logout/      # Logout handler
+│   │   │   │   └── register/    # Registration page with success modal
+│   │   │   ├── (info)/          # Info pages route group
+│   │   │   │   ├── about/       # About page with timeline modal
+│   │   │   │   └── gallery/     # Gallery page
+│   │   │   └── user/            # User-related pages
+│   │   │       └── settings/    # User settings page (protected)
 │   │   ├── api/                 # API routes
-│   │   ├── login/               # Login page
-│   │   ├── logout/              # Logout handler
-│   │   ├── register/            # Registration page
-│   │   ├── layout.tsx           # Root layout
+│   │   │   └── auth/[...all]/   # Better Auth handler
+│   │   ├── layout.tsx           # Root layout with footer
+│   │   ├── loading.tsx          # Loading UI
 │   │   └── globals.css          # Global styles
-│   ├── components/              # React components
-│   ├── lib/                     # Data and configuration
-│   └── models/                  # TypeScript interfaces
-├── public/                      # Static assets
+│   ├── components/              # React components (23 files)
+│   │   ├── about/               # About page components (staff, timeline)
+│   │   ├── auth/                # Authentication components (forms, modals, email templates)
+│   │   ├── gallery/             # Gallery carousel component
+│   │   ├── home/                # Home page components (navbar, info sections)
+│   │   ├── modals/              # Shared modal component
+│   │   └── shared/              # Reusable UI (navbar, footer, images, buttons)
+│   ├── lib/                     # Data and configuration (6 files)
+│   │   ├── auth.ts              # Better Auth server configuration
+│   │   ├── auth-client.ts       # Better Auth client configuration
+│   │   ├── auth-config.ts       # Auth configuration helpers
+│   │   ├── data.ts              # MongoDB data fetching functions
+│   │   ├── email.ts             # Resend email service integration
+│   │   └── mongodb.ts           # MongoDB connection with caching
+│   └── models/                  # Mongoose models (4 files)
+│       ├── GalleryImage.ts      # Gallery image model
+│       ├── ServiceTime.ts       # Service times model
+│       ├── StaffMember.ts       # Staff member model
+│       └── TimelineEvent.ts     # Timeline event model
+├── public/                      # Static assets (images)
 ├── Dockerfile                   # Docker configuration
+├── compose.yml                  # Docker Compose with MongoDB
 └── package.json                 # Dependencies and scripts
 ```
 
@@ -170,28 +199,40 @@ whitehead-church-app/
 
 The application uses MongoDB for data persistence with Mongoose ODM. Connection management is handled via `src/lib/mongodb.ts` with connection caching for optimal performance.
 
-**Data Models:**
+**Mongoose Models:**
+- `GalleryImage` - Gallery images with captions, alt text, and display order
 - `ServiceTime` - Church service times/schedule
-- `StaffMember` - Staff members affiliated with the church including name, roles, avatar URL, etc.
+- `StaffMember` - Staff members with name, roles, avatar URL, and display order
 - `TimelineEvent` - Church history timeline events with title, date, and description
-- User authentication data (managed by Better Auth)
+- User authentication data (managed internally by Better Auth)
+
+**Data Access:**
+All application data is fetched server-side using functions in `src/lib/data.ts`:
+- `getTimelineEvents()` - Retrieves timeline events sorted by date
+- `getStaffMembers()` - Retrieves staff members sorted by display order
+- `getGalleryImages()` - Retrieves gallery images sorted by display order
+- `getServiceTimes()` - Retrieves service times sorted by name
+
+These functions are called directly in server components and use MongoDB queries for data retrieval.
 
 ### Email Service
 
-The application integrates **Resend** for sending transactional emails with React-based email templates.
+The application integrates **Resend** for sending transactional emails with React-based email templates built using `@react-email/components`.
 
 Email functionality requires:
 - Valid `RESEND_API_KEY` environment variable
 - `APP_EMAIL_ADDRESS` configured for the sender address
 
+**Email Templates:**
+- Email verification - Sent when users sign in, prompting them to verify their email address
+
 ### API Routes
 
 The application implements Next.js API routes under `src/app/api/`:
 
-- **`/api/timeline`** - GET endpoint that retrieves timeline events from MongoDB, sorted chronologically
-- **`/api/auth/[...all]`** - Better Auth handler for authentication operations (login, register, logout, email verification)
+- **`/api/auth/[...all]`** - Better Auth handler for all authentication operations (login, register, logout, email verification, session management)
 
-All API routes use server-side data fetching with MongoDB queries and return JSON responses.
+All data fetching is performed server-side in components using direct MongoDB queries via `src/lib/data.ts` functions.
 
 ## Planned Features
 
@@ -208,10 +249,12 @@ These features will enable church administrators to maintain and update website 
 ## Development Guidelines
 
 - All components use functional components with TypeScript
-- Client components require `"use client"` directive
+- Client components require `"use client"` directive (most interactive components)
+- Server components use `"server-only"` directive for server-exclusive modules
 - Use React Bootstrap for UI components
-- Bootstrap CSS classes for utilities
+- Bootstrap CSS classes for utility styling
 - Path alias `@/*` resolves to `src/*`
+- Parallel routes and intercepting routes used for modals (timeline, email verification, registration success)
 
 ## Contributing
 
