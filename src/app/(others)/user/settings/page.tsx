@@ -15,7 +15,7 @@ export default async function Page() {
   }
 
   return (
-    <Container as="main" className="my-4 text-center text-md-start">
+    <Container className="my-4 text-center text-md-start">
       <h1 className="fs-2">User Settings</h1>
       <hr />
       <p>This is the user settings page.</p>
