@@ -12,6 +12,7 @@
     "@react-email/components": "^1.0.6",
     "better-auth": "^1.4.16",
     "bootstrap": "^5.3.8",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "mongoose": "^9.1.4",
     "next": "16.1.1",
