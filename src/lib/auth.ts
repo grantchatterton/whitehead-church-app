@@ -27,9 +27,10 @@ export const auth = betterAuth({
         react: EmailVerificationTemplate({ verificationUrl: url }),
       });
     },
-    sendOnSignIn: true,
+    sendOnSignIn: false,
     sendOnSignUp: false,
     autoSignInAfterVerification: false,
+    
   },
   emailAndPassword: {
     enabled: true,
