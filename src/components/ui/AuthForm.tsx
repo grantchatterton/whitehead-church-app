@@ -162,10 +162,18 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
               router.push("/");
             }
           },
-          onError(context) {
-            // If email is not verified, show verification modal
+          async onError(context) {
+            // If email is not verified, send verification email, and show modal
             if (context.error.status === 403) {
-              showEmailVerificationModal();
+              await authClient.sendVerificationEmail({
+                email,
+                callbackURL: "/email-verified",
+                fetchOptions: {
+                  onSuccess() {
+                    showEmailVerificationModal();
+                  },
+                },
+              });
             } else {
               setError(context.error.message || "Login failed");
             }
