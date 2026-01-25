@@ -13,7 +13,7 @@ export interface IServiceTime {
 
 const ServiceTimeSchema = new mongoose.Schema<IServiceTime>(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
     days: {
       type: [String],
       required: true,
