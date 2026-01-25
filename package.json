@@ -19,7 +19,8 @@
     "react": "19.2.3",
     "react-bootstrap": "^2.10.10",
     "react-dom": "19.2.3",
-    "resend": "^6.8.0"
+    "resend": "^6.8.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^6.0.1",
