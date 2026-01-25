@@ -29,7 +29,7 @@ export const auth = betterAuth({
     },
     sendOnSignIn: true,
     sendOnSignUp: false,
-    autoSignInAfterVerification: true,
+    autoSignInAfterVerification: false,
   },
   emailAndPassword: {
     enabled: true,
