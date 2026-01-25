@@ -10,7 +10,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 
-import { signIn, signUp } from "@/lib/auth-client";
+import { authClient, signIn, signUp } from "@/lib/auth-client";
 
 interface AuthFormContainerProps {
   title: string;
@@ -91,6 +91,10 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
     router.push("/register/registration-success");
   }
 
+  function showTwoFactorModal() {
+    router.push("/login/two-factor-verification");
+  }
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -143,8 +147,20 @@ export default function AuthForm({ mode, allowSignup = true }: AuthFormProps) {
         email,
         password,
         fetchOptions: {
-          onSuccess() {
-            router.push("/");
+          async onSuccess(context) {
+            // If two-factor is enabled, send OTP and show modal
+            if (context.data.twoFactorRedirect) {
+              await authClient.twoFactor.sendOtp({
+                fetchOptions: {
+                  onSuccess() {
+                    showTwoFactorModal();
+                  },
+                },
+              });
+            } else {
+              // Redirect to home page after successful login
+              router.push("/");
+            }
           },
           onError(context) {
             // If email is not verified, show verification modal
