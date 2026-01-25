@@ -2,7 +2,7 @@ import "server-only";
 
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { twoFactor } from "better-auth/plugins";
+import { admin, twoFactor } from "better-auth/plugins";
 import type { Mongoose } from "mongoose";
 
 import EmailTwoFactorTemplate from "@/components/ui/templates/EmailTwoFactorTemplate";
@@ -30,7 +30,6 @@ export const auth = betterAuth({
     sendOnSignIn: false,
     sendOnSignUp: false,
     autoSignInAfterVerification: false,
-    
   },
   emailAndPassword: {
     enabled: true,
@@ -38,6 +37,7 @@ export const auth = betterAuth({
     requireEmailVerification: true,
   },
   plugins: [
+    admin(),
     twoFactor({
       otpOptions: {
         async sendOTP({ user, otp }, ctx) {
