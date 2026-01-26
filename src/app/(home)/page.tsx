@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -8,10 +7,9 @@ import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 
 import { AppNavbarItems } from "@/components/ui/AppNavbar";
-import LinkButton from "@/components/ui/LinkButton";
 import CrossImage from "@/components/ui/images/CrossImage";
-import { auth } from "@/lib/auth";
-import { getServiceTimes } from "@/lib/data";
+
+import ServiceTimesList from "./_components/ServiceTimesList";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -19,18 +17,11 @@ export const metadata: Metadata = {
     "Welcome to Whitehead Baptist Church, located in the Blue Ridge Mountains of North Carolina. Join us for worship and fellowship.",
 };
 
-const appTitle = process.env.NEXT_PUBLIC_APP_TITLE!;
 const address = "5444 Pine Swamp Rd, Sparta, North Carolina, 28675";
 
-export default async function Page() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  const user = session?.user;
-  const isAdmin = user?.role?.includes("admin") || false;
+const appTitle = process.env.NEXT_PUBLIC_APP_TITLE!;
 
-  const serviceTimes = await getServiceTimes({ formatTimes: true });
-
+export default function Page() {
   return (
     <Stack as="main">
       <Container className="m-auto py-4">
@@ -59,19 +50,7 @@ export default async function Page() {
           </Col>
           <Col className="text-center" md={6}>
             <h3 className="mb-2">Service Times</h3>
-            {isAdmin && (
-              <LinkButton href="/admin/service-times" className="mb-2">
-                Manage Service Times
-              </LinkButton>
-            )}
-            <ul className="list-unstyled mb-0">
-              {serviceTimes.map((service) => (
-                <li key={service._id}>
-                  {service.name} ({service.days.join(", ")}):{" "}
-                  {service.startTime} - {service.endTime}
-                </li>
-              ))}
-            </ul>
+            <ServiceTimesList />
           </Col>
         </Row>
       </Container>
