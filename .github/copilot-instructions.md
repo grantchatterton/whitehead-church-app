@@ -3,9 +3,9 @@
 ## Repository Overview
 
 **Purpose**: Church website for Whitehead Baptist Church  
-**Type**: Next.js 16 web application with React 19 and TypeScript  
-**Size**: ~900 lines of code, 46MB (with dependencies)  
-**Runtime**: Node.js v20 (specifically tested with v20.19.6), npm v10.8.2
+**Type**: Next.js 16 (App Router) with React 19 and TypeScript  
+**Size**: ~1,400 lines of code, 46MB (with dependencies)  
+**Runtime**: Node.js v20 (tested with v20.19.6), npm v10.8.2
 
 ## Critical Setup - ALWAYS Follow This Order
 
@@ -29,7 +29,7 @@ npm install
 ### 2. Build Commands (Validated Sequence)
 
 ```bash
-# Development server (runs on http://localhost:3000)
+# Development server (runs on http://localhost:3000 per package.json)
 npm run dev
 
 # Production build (takes ~10 seconds with Turbopack)
@@ -47,46 +47,101 @@ npm run start
 - **Clean build time**: ~10 seconds using Turbopack
 - **Output directory**: `.next/` (gitignored, safe to delete for clean builds)
 - **Standalone output**: Enabled via `next.config.ts` for Docker deployment
-- **Routes generated**: 4 static pages (/, /about, /gallery, /\_not-found) + 1 dynamic API route (/api/timeline)
+- **Routes generated**: Home, About, Gallery, Timeline modal, Auth (login/register/logout), User settings (protected), Admin dashboard with service-times management (protected), API routes for auth and service times
 
 ## Project Architecture
 
 ### Directory Structure
 
 ```
-├── app/                      # Next.js App Router (7 route files)
-│   ├── (home)/page.tsx      # Home page (route group)
-│   ├── (info)/              # Info pages route group
-│   │   ├── about/page.tsx   # About page with timeline
-│   │   ├── gallery/page.tsx # Photo gallery page
-│   │   └── layout.tsx       # Shared layout for info pages
-│   ├── api/timeline/        # API route for timeline data
-│   ├── layout.tsx           # Root layout (navbar/footer)
-│   ├── loading.tsx          # Loading UI
-│   └── globals.css          # Global styles
-├── components/              # React components (18 files, all client-side)
-│   ├── about/               # About page components
-│   ├── gallery/             # Gallery carousel
-│   ├── home/                # Home page components
-│   └── shared/              # Reusable UI (navbar, footer, images)
-├── lib/                     # Data and configuration (5 files)
-│   ├── config.ts            # Site constants (title, address, contact)
-│   ├── gallery.ts           # Gallery image data
-│   ├── home.ts              # Home page data
-│   ├── staff.ts             # Staff member data
-│   └── timeline.ts          # Timeline events data
-├── models/                  # TypeScript interfaces (4 files)
-│   ├── GalleryImage.ts
-│   ├── ServiceTime.ts
-│   ├── StaffMember.ts
-│   └── TimelineEvent.ts
-└── public/                  # Static assets (images)
+├── src/
+│   ├── app/                      # Next.js App Router
+│   │   ├── (home)/               # Home page
+│   │   │   ├── page.tsx
+│   │   │   └── _components/      # Home-only components
+│   │   ├── (info)/               # Info pages
+│   │   │   ├── layout.tsx
+│   │   │   ├── about/            # About with timeline modal
+│   │   │   │   ├── page.tsx
+│   │   │   │   ├── layout.tsx
+│   │   │   │   ├── _components/
+│   │   │   │   ├── @modal/       # Timeline modal
+│   │   │   │   └── timeline/
+│   │   │   └── gallery/          # Gallery page
+│   │   │       ├── page.tsx
+│   │   │       └── _components/
+│   │   ├── (others)/             # Shared layouts + auth/admin/user
+│   │   │   ├── layout.tsx
+│   │   │   ├── (auth)/           # Auth routes with modals
+│   │   │   │   ├── layout.tsx
+│   │   │   │   ├── email-verified/
+│   │   │   │   ├── login/
+│   │   │   │   │   ├── page.tsx
+│   │   │   │   │   ├── layout.tsx
+│   │   │   │   │   └── @modal/   # Email verification / 2FA modals
+│   │   │   │   ├── logout/
+│   │   │   │   └── register/
+│   │   │   │       ├── page.tsx
+│   │   │   │       ├── layout.tsx
+│   │   │   │       └── @modal/   # Registration success modal
+│   │   │   ├── admin/            # Admin dashboard (protected)
+│   │   │   │   ├── layout.tsx
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── service-times/
+│   │   │   │       ├── layout.tsx
+│   │   │   │       ├── page.tsx
+│   │   │   │       └── @modal/   # CRUD modals for service times
+│   │   │   ├── user/             # User settings (protected)
+│   │   │   │   └── settings/
+│   │   │   │       ├── layout.tsx
+│   │   │   │       ├── page.tsx
+│   │   │   │       └── @modal/
+│   │   ├── api/                  # API routes
+│   │   │   ├── auth/[...all]/    # Better Auth handler
+│   │   │   └── service-times/
+│   │   │       ├── route.ts      # GET/POST
+│   │   │       └── [id]/route.ts # PUT/DELETE
+│   │   ├── layout.tsx            # Root layout (navbar/footer)
+│   │   ├── loading.tsx           # Loading UI
+│   │   └── globals.css           # Global styles
+│   ├── components/               # Shared UI components
+│   │   └── ui/
+│   │       ├── AppFooter.tsx
+│   │       ├── AppNavbar.tsx
+│   │       ├── AuthForm.tsx
+│   │       ├── InfoPage.tsx
+│   │       ├── LinkButton.tsx
+│   │       ├── buttons/          # AddStarterServiceTimesButton.tsx
+│   │       ├── forms/            # ServiceTimeForm.tsx
+│   │       ├── images/           # CrossImage, DefaultAvatarImage
+│   │       ├── modals/           # AppModal, ServiceTimeModal, 2FA, etc.
+│   │       └── templates/        # Email templates (verification, 2FA)
+│   ├── lib/                      # Server utilities & data
+│   │   ├── actions.ts            # Server actions for mutations
+│   │   ├── auth.ts / auth-client.ts / auth-config.ts
+│   │   ├── auth-session.ts       # verifySession, verifyUserAdmin helpers
+│   │   ├── data.ts               # Data fetching
+│   │   ├── email.ts              # Resend email integration
+│   │   └── mongodb.ts            # MongoDB connection helper
+│   ├── schemas/                  # Zod validation schemas
+│   │   └── ServiceTime.ts
+│   ├── models/                   # Mongoose models
+│   │   ├── GalleryImage.ts
+│   │   ├── ServiceTime.ts
+│   │   ├── StaffMember.ts
+│   │   └── TimelineEvent.ts
+│   └── types/
+│       └── global.d.ts
+├── public/                       # Static assets
+├── Dockerfile                    # Docker configuration
+├── compose.yml                   # Docker Compose (MongoDB)
+└── package.json                  # Scripts and dependencies
 ```
 
 ### Key Configuration Files (Root Directory)
 
 - `package.json` - Dependencies and npm scripts
-- `tsconfig.json` - TypeScript config with strict mode, `@/*` path alias
+- `tsconfig.json` - TypeScript config with strict mode, `@/*` and `@public/*` path aliases
 - `eslint.config.mjs` - Flat config using Next.js + Prettier rules
 - `.prettierrc.json` - Prettier config with import sorting plugin
 - `next.config.ts` - Next.js config with `output: "standalone"` for Docker
@@ -111,7 +166,7 @@ npm run lint
 
 # 2. Production build (validates everything compiles)
 npm run build
-# Expected: "✓ Compiled successfully in ~10s", generates 7 routes
+# Expected: "✓ Compiled successfully in ~10s", generates all app routes (home, info pages, auth, admin, user, modals, APIs)
 
 # 3. Format check (optional, Prettier validation)
 npx prettier --check .
@@ -120,7 +175,7 @@ npx prettier --check .
 
 ### Known Lint Warnings (Safe to Ignore)
 
-- `components/gallery/GalleryCarousel.tsx` - "Button is defined but never used" (current as of last check)
+- `src/app/(info)/gallery/_components/GalleryCarousel.tsx` - "Button is defined but never used" (current as of last check)
 
 ## Component & Code Conventions
 
@@ -157,7 +212,7 @@ import { Metadata } from "next";
 import Container from "react-bootstrap/Container";
 
 // React Bootstrap
-import AppNavbar from "@/components/shared/AppNavbar";
+import AppNavbar from "@/components/ui/AppNavbar";
 
 // Internal
 import "./globals.css";
@@ -168,6 +223,7 @@ import "./globals.css";
 ### Path Aliases
 
 - **`@/*`** resolves to project root (e.g., `@/components`, `@/lib/config`)
+- **`@public/*`** resolves to `public/*`
 - Configured in `tsconfig.json` paths
 
 ## Docker & Deployment
@@ -191,13 +247,15 @@ docker run -p 3000:3000 whitehead-church-app
 docker compose up -d  # Starts MongoDB on port 27017
 ```
 
-Note: MongoDB configured but not currently used by app (future database integration)
+Note: MongoDB is used for authentication, service times, and content data. Compose is optional if you supply your own MongoDB URI.
 
 ## Data Management
 
-- **No database**: All data is hardcoded in `lib/*.ts` files
-- **API route**: `/api/timeline` serves data from `lib/timeline.ts`
-- **State management**: None (use React hooks for component state)
+- **Database**: MongoDB via Mongoose models in `src/models`
+- **Data access**: Server utilities in `src/lib/data.ts`
+- **Server Actions**: Mutations handled in `src/lib/actions.ts`
+- **Validation**: Zod schemas in `src/schemas/ServiceTime.ts`
+- **API routes**: `/api/auth/[...all]` (Better Auth) and `/api/service-times` (+ `/api/service-times/[id]`)
 
 ## Common Pitfalls & Solutions
 
@@ -205,7 +263,7 @@ Note: MongoDB configured but not currently used by app (future database integrat
 
 ❌ **`next: not found`** → Run `npm install` first  
 ❌ **TypeScript errors** → Check `tsconfig.json` strict mode compliance  
-❌ **Module not found** → Verify `@/*` imports use correct paths
+❌ **Module not found** → Verify `@/*` and `@public/*` imports use correct paths
 
 ### Component Issues
 
@@ -219,7 +277,7 @@ Note: MongoDB configured but not currently used by app (future database integrat
 
 1. Build must succeed without errors (`npm run build`)
 2. Lint must pass with only known warnings (`npm run lint`)
-3. Dev server must start (`npm run dev`) and pages load at localhost:3000
+3. Dev server must start (`npm run dev`) and pages load at http://localhost:3000
 
 ## CI/CD Information
 
