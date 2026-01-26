@@ -29,7 +29,7 @@ export default async function Page() {
   const user = session?.user;
   const isAdmin = user?.role?.includes("admin") || false;
 
-  const serviceTimes = await getServiceTimes();
+  const serviceTimes = await getServiceTimes({ formatTimes: true });
 
   return (
     <Stack as="main">

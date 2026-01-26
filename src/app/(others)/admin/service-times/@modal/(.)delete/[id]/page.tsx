@@ -1,50 +1,69 @@
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+"use client";
 
-import { verifyUserAdmin } from "@/lib/auth-session";
-import dbConnect from "@/lib/mongodb";
-import ServiceTimeModel from "@/models/ServiceTime";
+import { useActionState, useCallback, useEffect, useState } from "react";
 
-import DeleteServiceTimeForm from "./_components/DeleteServiceTimeForm";
+import { useParams, useRouter } from "next/navigation";
 
-async function deleteServiceTime(
-  state: FormState,
-  formData: FormData
-): Promise<FormState> {
-  "use server";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import Spinner from "react-bootstrap/Spinner";
 
-  if (!(await verifyUserAdmin())) {
-    redirect("/login");
-  }
+import { deleteServiceTime } from "@/lib/actions";
 
-  try {
-    await dbConnect();
-    await ServiceTimeModel.deleteOne({ _id: formData.get("id") });
-  } catch (error) {
-    console.error("Error deleting service time:", error);
-    return { status: "error", message: "Failed to delete service time." };
-  }
+export default function Page() {
+  const { id } = useParams<{ id: string }>();
 
-  revalidatePath("/admin/service-times");
+  const router = useRouter();
 
-  return { status: "success" };
-}
+  const [state, action, pending] = useActionState(
+    deleteServiceTime.bind(null, id),
+    {}
+  );
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+  const [show, setShow] = useState(true);
 
-  if (!(await verifyUserAdmin())) {
-    redirect("/login");
-  }
+  const handleClose = useCallback(() => {
+    setShow(false);
+    router.back();
+  }, [router]);
+
+  useEffect(() => {
+    (() => {
+      if (state.status === "success") {
+        handleClose();
+      }
+    })();
+  }, [state, handleClose]);
 
   return (
-    <DeleteServiceTimeForm
-      submitAction={deleteServiceTime}
-      serviceTimeId={id}
-    />
+    <Modal centered show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Delete Service Time</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>Are you sure you want to delete this service time?</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Form action={action}>
+          <Button variant="danger" type="submit" disabled={pending}>
+            {pending ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />{" "}
+                Deleting...
+              </>
+            ) : (
+              "Delete"
+            )}
+          </Button>
+        </Form>
+      </Modal.Footer>
+    </Modal>
   );
 }

@@ -1,29 +1,71 @@
 "use client";
 
-import { useActionState } from "react";
+import { use, useActionState, useEffect } from "react";
 
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Placeholder from "react-bootstrap/Placeholder";
 
 import type { IServiceTime } from "@/models/ServiceTime";
 
-const initialState: FormState = {};
+export function ServiceTimeFormSkeleton() {
+  return (
+    <Form>
+      <Form.Group className="mb-3" controlId="name">
+        <Form.Label>Service Name</Form.Label>
+        <Placeholder className="form-control" animation="glow">
+          <Placeholder xs={12} />
+        </Placeholder>
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="days">
+        <Form.Label>Days</Form.Label>
+        <div>
+          {[...Array(7)].map((_, index) => (
+            <Placeholder key={index} className="form-check" animation="glow">
+              <Placeholder xs={2} />
+            </Placeholder>
+          ))}
+        </div>
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="startTime">
+        <Form.Label>Start Time</Form.Label>
+        <Placeholder className="form-control" animation="glow">
+          <Placeholder xs={12} />
+        </Placeholder>
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="endTime">
+        <Form.Label>End Time</Form.Label>
+        <Placeholder className="form-control" animation="glow">
+          <Placeholder xs={12} />
+        </Placeholder>
+      </Form.Group>
+    </Form>
+  );
+}
 
-export default function ServiceTimeForm({
-  submitAction,
-  serviceTime,
-}: {
+type ServiceTimeFormProps = React.ComponentProps<typeof Form> & {
   submitAction: (
     formState: FormState,
     formData: FormData
   ) => Promise<FormState>;
-  serviceTime?: IServiceTime & { _id?: string };
-}) {
-  const [state, formAction, pending] = useActionState(
-    submitAction,
-    initialState
-  );
+  serviceTimePromise?: Promise<(IServiceTime & { _id: string }) | null>;
+  onPendingChange?: (pending: boolean) => void;
+};
+
+export default function ServiceTimeForm({
+  submitAction,
+  serviceTimePromise,
+  onPendingChange,
+  ...props
+}: ServiceTimeFormProps) {
+  const serviceTime = serviceTimePromise ? use(serviceTimePromise) : null;
+
+  const [state, formAction, pending] = useActionState(submitAction, {});
+
+  useEffect(() => {
+    onPendingChange?.(pending);
+  }, [pending, onPendingChange]);
 
   return (
     <>
@@ -42,7 +84,7 @@ export default function ServiceTimeForm({
           {state.message}
         </Alert>
       )}
-      <Form action={formAction}>
+      <Form action={formAction} id="serviceTimeForm" {...props}>
         {serviceTime?._id && (
           <Form.Control
             type="hidden"
@@ -73,6 +115,7 @@ export default function ServiceTimeForm({
             ].map((day) => (
               <Form.Check
                 key={day}
+                id={`day-${day}`}
                 type="checkbox"
                 name="days"
                 value={day}
@@ -100,9 +143,6 @@ export default function ServiceTimeForm({
             required
           />
         </Form.Group>
-        <Button type="submit" disabled={pending}>
-          {pending ? "Saving..." : "Save"}
-        </Button>
       </Form>
     </>
   );
