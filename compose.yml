@@ -1,6 +1,8 @@
 services:
   nextjs:
     container_name: church-app
+    env_file:
+      - .env.local
     build:
       context: .
       args:
