@@ -23,7 +23,6 @@ export default async function Page() {
         </LinkButton>
         <AddStarterServiceTimesButton />
       </div>
-
       <Table striped bordered hover responsive className="text-start">
         <thead>
           <tr>
