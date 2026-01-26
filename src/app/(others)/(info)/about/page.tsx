@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-
 import InfoPage from "@/components/ui/InfoPage";
-import LinkButton from "@/components/ui/LinkButton";
-import { getStaffMembers } from "@/lib/data";
+import { getTimelineEvents } from "@/lib/data";
 
-import StaffMemberCard from "./_components/StaffMemberCard";
+import StaffMembersList from "./_components/StaffMembersList";
+import TimelineContainer from "./_components/TimelineContainer";
 
 export const metadata: Metadata = {
   title: "About",
@@ -16,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const staffMembers = await getStaffMembers();
+  const timelineEvents = await getTimelineEvents();
 
   return (
     <InfoPage title="About Us">
@@ -37,20 +34,8 @@ export default async function Page() {
         our history, join us in worship, and become part of our ongoing story of
         faith and fellowship.
       </p>
-      <LinkButton href="/about/timeline" className="mb-4">
-        View History
-      </LinkButton>
-      <Row className="g-4">
-        {staffMembers.map((staffMember) => (
-          <Col md={6} key={staffMember._id}>
-            <StaffMemberCard
-              name={staffMember.name}
-              roles={staffMember.roles}
-              avatarUrl={staffMember.avatarUrl}
-            />
-          </Col>
-        ))}
-      </Row>
+      <TimelineContainer timelineEvents={timelineEvents} />
+      <StaffMembersList />
     </InfoPage>
   );
 }

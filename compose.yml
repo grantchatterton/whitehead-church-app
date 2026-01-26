@@ -1,4 +1,19 @@
 services:
+  nextjs:
+    container_name: church-app
+    build:
+      context: .
+      args:
+        - MONGODB_URI=${MONGODB_URI}
+        - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+        - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+        - BETTER_AUTH_ALLOW_EMAIL_SIGNUP=${BETTER_AUTH_ALLOW_EMAIL_SIGNUP:-true}
+        - APP_EMAIL_ADDRESS=${APP_EMAIL_ADDRESS}
+        - NEXT_PUBLIC_APP_TITLE=${NEXT_PUBLIC_APP_TITLE}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+
   db:
     container_name: mongodb
     image: mongo
