@@ -2,8 +2,6 @@ import { redirect } from "next/navigation";
 
 import Table from "react-bootstrap/Table";
 
-import { format as dateFormat } from "date-fns";
-
 import InfoPage from "@/components/ui/InfoPage";
 import LinkButton from "@/components/ui/LinkButton";
 import AddStarterServiceTimesButton from "@/components/ui/buttons/AddStarterServiceTimesButton";
