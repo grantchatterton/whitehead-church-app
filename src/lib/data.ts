@@ -1,5 +1,7 @@
 import "server-only";
 
+import { format as dateFormat } from "date-fns";
+
 import GalleryImageModel, { type IGalleryImage } from "@/models/GalleryImage";
 import ServiceTimeModel, { type IServiceTime } from "@/models/ServiceTime";
 import StaffMemberModel, { type IStaffMember } from "@/models/StaffMember";
@@ -58,5 +60,13 @@ export async function getServiceTimes(): Promise<
   return serviceTimes.map((serviceTime) => ({
     ...serviceTime,
     _id: serviceTime._id.toString(),
+    startTime: dateFormat(
+      new Date(`1970-01-01T${serviceTime.startTime}:00`),
+      "hh:mm a"
+    ),
+    endTime: dateFormat(
+      new Date(`1970-01-01T${serviceTime.endTime}:00`),
+      "hh:mm a"
+    ),
   }));
 }
