@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import Container from "react-bootstrap/Container";
-
 import LinkButton from "@/components/ui/LinkButton";
-import { auth } from "@/lib/auth";
+import { verifySession } from "@/lib/auth-session";
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -13,16 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  const user = session?.user;
-  if (!user) {
+  if (!(await verifySession())) {
     redirect("/login");
   }
 
   return (
-    <Container className="my-4 text-center text-md-start">
+    <>
       <h1 className="fs-2">Settings</h1>
       <hr />
       <h2 className="fs-3">Login & Security</h2>
@@ -30,6 +23,6 @@ export default async function Page() {
       <LinkButton href="/user/settings/security">
         Go to Security Settings
       </LinkButton>
-    </Container>
+    </>
   );
 }

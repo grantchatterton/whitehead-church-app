@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import Modal from "react-bootstrap/Modal";
 import Pagination from "react-bootstrap/Pagination";
 
@@ -13,19 +15,17 @@ type TimelineModalProps = React.ComponentProps<typeof Modal> & {
   timelineEvents: ITimelineEvent[];
 };
 
-export default function TimelineModal({
-  timelineEvents,
-  ...props
-}: TimelineModalProps) {
+export default function TimelineModal({ timelineEvents }: TimelineModalProps) {
+  const router = useRouter();
   const [currEventIndex, setCurrEventIndex] = useState(0);
 
   const currTimelineEvent =
-    currEventIndex >= 0 && currEventIndex < (timelineEvents?.length ?? 0)
-      ? timelineEvents![currEventIndex]
+    currEventIndex >= 0 && currEventIndex < (timelineEvents.length ?? 0)
+      ? timelineEvents[currEventIndex]
       : null;
 
   return (
-    <Modal centered size="lg" {...props}>
+    <Modal show centered size="lg" onHide={() => router.back()}>
       <Modal.Header closeButton>
         <Modal.Title>History</Modal.Title>
       </Modal.Header>

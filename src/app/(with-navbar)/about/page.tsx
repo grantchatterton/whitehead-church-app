@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 
 import InfoPage from "@/components/ui/InfoPage";
-import { getTimelineEvents } from "@/lib/data";
-
-import StaffMembersList from "./_components/StaffMembersList";
-import TimelineContainer from "./_components/TimelineContainer";
+import LinkButton from "@/components/ui/LinkButton";
+import StaffMembersList from "@/components/ui/lists/StaffMembersList";
 
 export const metadata: Metadata = {
   title: "About",
@@ -12,9 +10,7 @@ export const metadata: Metadata = {
     "Learn about the history and staff of Whitehead Baptist Church. Discover our journey from humble beginnings to the present day in the Blue Ridge Mountains.",
 };
 
-export default async function Page() {
-  const timelineEvents = await getTimelineEvents();
-
+export default function Page() {
   return (
     <InfoPage title="About Us">
       <p>
@@ -34,7 +30,9 @@ export default async function Page() {
         our history, join us in worship, and become part of our ongoing story of
         faith and fellowship.
       </p>
-      <TimelineContainer timelineEvents={timelineEvents} />
+      <LinkButton href="/about/timeline" className="mb-4">
+        View History
+      </LinkButton>
       <StaffMembersList />
     </InfoPage>
   );

@@ -37,7 +37,7 @@ export default function RootLayout({
           loading="eager"
         />
         <Stack direction="vertical" className="min-vh-100 p-4">
-          {children}
+          <Stack>{children}</Stack>
           <AppFooter />
         </Stack>
       </body>

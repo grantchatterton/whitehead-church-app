@@ -1,9 +1,8 @@
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
+import StaffMemberCard from "@/components/ui/cards/StaffMemberCard";
 import { getStaffMembers } from "@/lib/data";
-
-import StaffMemberCard from "./StaffMemberCard";
 
 export default async function StaffMembersList() {
   const staffMembers = await getStaffMembers();

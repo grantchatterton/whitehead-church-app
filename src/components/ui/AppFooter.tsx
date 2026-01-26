@@ -1,5 +1,7 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+
 import Container from "react-bootstrap/Container";
 import Stack from "react-bootstrap/Stack";
 
@@ -9,6 +11,8 @@ import { useSession } from "@/lib/auth-client";
 const appTitle = process.env.NEXT_PUBLIC_APP_TITLE!;
 
 export default function AppFooter() {
+  const pathname = usePathname();
+
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -35,9 +39,11 @@ export default function AppFooter() {
             <Stack
               direction="horizontal"
               gap={2}
-              className="justify-content-center mb-2"
+              className="justify-content-center"
             >
-              <LinkButton href="/user/settings">Settings</LinkButton>
+              {!pathname.startsWith("/user/settings") && (
+                <LinkButton href="/user/settings">Settings</LinkButton>
+              )}
               <LinkButton href="/logout">Sign Out</LinkButton>
             </Stack>
           </>

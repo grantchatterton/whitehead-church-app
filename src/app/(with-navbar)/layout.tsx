@@ -1,4 +1,4 @@
-import Stack from "react-bootstrap/Stack";
+import Container from "react-bootstrap/Container";
 
 import AppNavbar from "@/components/ui/AppNavbar";
 
@@ -6,7 +6,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <AppNavbar />
-      <Stack as="main">{children}</Stack>
+      <Container className="my-4 text-center text-md-start">
+        {children}
+      </Container>
     </>
   );
 }
