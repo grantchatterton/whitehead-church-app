@@ -9,8 +9,10 @@ A modern, responsive church website built with Next.js 16, React 19, and TypeScr
 - **Home Page** - Welcome message with church location and service information
 - **About Page** - Church history, interactive timeline with modal, and staff directory
 - **Photo Gallery** - Carousel showcase of church activities and facilities
-- **Authentication System** - Email-based user authentication powered by Better Auth with email verification
+- **Authentication System** - Email-based user authentication powered by Better Auth with email verification and two-factor authentication
 - **User Settings** - Protected user settings page for authenticated users
+- **Admin Dashboard** - Administrative interface for managing church data (service times management)
+- **Service Times Management** - Admin-only CRUD operations for church service schedules
 - **Responsive Design** - Built with React Bootstrap for mobile-first accessibility
 - **MongoDB Integration** - Database support for user authentication, timeline events, staff members, service times, and gallery images
 
@@ -137,24 +139,51 @@ whitehead-church-app/
 ├── src/
 │   ├── app/                      # Next.js App Router
 │   │   ├── (home)/              # Home page route group
-│   │   │   ├── layout.tsx       # Home layout
-│   │   │   └── page.tsx         # Home page with inline service times and location
+│   │   │   ├── page.tsx         # Home page with service times and location
+│   │   │   └── _components/     # Page-specific components
+│   │   │       └── ServiceTimesList.tsx  # Service times list component
 │   │   ├── (others)/            # Other pages route group
 │   │   │   ├── layout.tsx       # Shared layout with AppNavbar
 │   │   │   ├── (auth)/          # Authentication route group
-│   │   │   │   ├── login/       # Login page with email verification modal
+│   │   │   │   ├── layout.tsx   # Auth layout
+│   │   │   │   ├── email-verified/  # Email verification success page
+│   │   │   │   ├── login/       # Login page with modals
+│   │   │   │   │   ├── page.tsx
+│   │   │   │   │   ├── layout.tsx
+│   │   │   │   │   └── @modal/  # Parallel route for email/2FA modals
 │   │   │   │   ├── logout/      # Logout handler
 │   │   │   │   └── register/    # Registration page with success modal
+│   │   │   │       ├── page.tsx
+│   │   │   │       ├── layout.tsx
+│   │   │   │       └── @modal/  # Parallel route for registration success
 │   │   │   ├── (info)/          # Info pages route group
+│   │   │   │   ├── layout.tsx   # Info layout
 │   │   │   │   ├── about/       # About page with timeline modal
-│   │   │   │   │   ├── _components/  # Page-specific components (StaffMemberCard)
-│   │   │   │   │   └── @modal/       # Parallel route for timeline modal
+│   │   │   │   │   ├── page.tsx
+│   │   │   │   │   ├── layout.tsx
+│   │   │   │   │   ├── _components/  # StaffMemberCard
+│   │   │   │   │   ├── @modal/       # Parallel route for timeline modal
+│   │   │   │   │   └── timeline/     # Timeline page
 │   │   │   │   └── gallery/     # Gallery page
-│   │   │   │       └── _components/  # Page-specific components (GalleryCarousel)
+│   │   │   │       ├── page.tsx
+│   │   │   │       └── _components/  # GalleryCarousel
+│   │   │   ├── admin/           # Admin dashboard (protected)
+│   │   │   │   ├── layout.tsx   # Admin layout
+│   │   │   │   ├── page.tsx     # Admin home
+│   │   │   │   └── service-times/  # Service times management
+│   │   │   │       ├── page.tsx
+│   │   │   │       ├── layout.tsx
+│   │   │   │       └── @modal/  # Parallel routes for create/edit/delete modals
 │   │   │   └── user/            # User-related pages
 │   │   │       └── settings/    # User settings page (protected)
+│   │   │           ├── page.tsx
+│   │   │           ├── layout.tsx
+│   │   │           └── @modal/
 │   │   ├── api/                 # API routes
-│   │   │   └── auth/[...all]/   # Better Auth handler
+│   │   │   ├── auth/[...all]/   # Better Auth handler
+│   │   │   └── service-times/   # Service times CRUD API
+│   │   │       ├── route.ts     # GET/POST endpoints
+│   │   │       └── [id]/route.ts  # PUT/DELETE endpoints
 │   │   ├── layout.tsx           # Root layout with footer and BackgroundImage
 │   │   ├── loading.tsx          # Loading UI
 │   │   └── globals.css          # Global styles
@@ -165,26 +194,41 @@ whitehead-church-app/
 │   │       ├── AuthForm.tsx     # Authentication form component
 │   │       ├── InfoPage.tsx     # Wrapper component for info pages
 │   │       ├── LinkButton.tsx   # Link styled as button
-│   │       ├── EmailVerificationTemplate.tsx  # Email template for verification
+│   │       ├── buttons/         # Button components
+│   │       │   └── AddStarterServiceTimesButton.tsx
+│   │       ├── forms/           # Form components
+│   │       │   └── ServiceTimeForm.tsx
 │   │       ├── images/          # Image components
 │   │       │   ├── CrossImage.tsx        # Church cross image
 │   │       │   └── DefaultAvatarImage.tsx  # Default avatar SVG
-│   │       └── modals/          # Modal components
-│   │           ├── AppModal.tsx                    # Generic modal wrapper
-│   │           ├── EmailVerificationRequiredModal.tsx
-│   │           └── RegistrationSuccessModal.tsx
-│   ├── lib/                     # Data and configuration (6 files)
+│   │       ├── modals/          # Modal components
+│   │       │   ├── AppModal.tsx                    # Generic modal wrapper
+│   │       │   ├── EmailVerificationRequiredModal.tsx
+│   │       │   ├── RegistrationSuccessModal.tsx
+│   │       │   ├── ServiceTimeModal.tsx            # Service time CRUD modal
+│   │       │   ├── TwoFactorModal.tsx              # Two-factor auth modal
+│   │       │   └── WrapperModal.tsx                # Modal wrapper utility
+│   │       └── templates/       # Email templates
+│   │           ├── EmailTwoFactorTemplate.tsx
+│   │           └── EmailVerificationTemplate.tsx
+│   ├── lib/                     # Data and configuration (8 files)
+│   │   ├── actions.ts           # Server actions for data mutations
 │   │   ├── auth.ts              # Better Auth server configuration
 │   │   ├── auth-client.ts       # Better Auth client configuration
 │   │   ├── auth-config.ts       # Auth configuration helpers
+│   │   ├── auth-session.ts      # Session verification utilities
 │   │   ├── data.ts              # MongoDB data fetching functions
 │   │   ├── email.ts             # Resend email service integration
 │   │   └── mongodb.ts           # MongoDB connection with caching
-│   └── models/                  # Mongoose models (4 files)
-│       ├── GalleryImage.ts      # Gallery image model
-│       ├── ServiceTime.ts       # Service times model
-│       ├── StaffMember.ts       # Staff member model
-│       └── TimelineEvent.ts     # Timeline event model
+│   ├── models/                  # Mongoose models (4 files)
+│   │   ├── GalleryImage.ts      # Gallery image model
+│   │   ├── ServiceTime.ts       # Service times model
+│   │   ├── StaffMember.ts       # Staff member model
+│   │   └── TimelineEvent.ts     # Timeline event model
+│   ├── schemas/                 # Zod validation schemas
+│   │   └── ServiceTime.ts       # Service time validation schema
+│   └── types/                   # TypeScript type definitions
+│       └── global.d.ts          # Global type declarations
 ├── public/                      # Static assets (images)
 ├── Dockerfile                   # Docker configuration
 ├── compose.yml                  # Docker Compose with MongoDB
@@ -194,9 +238,12 @@ whitehead-church-app/
 ### Architecture Highlights
 
 - **Co-located Components**: Page-specific components live in `_components/` folders next to their routes (e.g., `about/_components/StaffMemberCard.tsx`)
-- **Shared UI Library**: Reusable components centralized in `src/components/ui/` with clear organization by type
+- **Shared UI Library**: Reusable components centralized in `src/components/ui/` with clear organization by type (buttons, forms, modals, images, templates)
 - **Semantic HTML**: Main content uses semantic `<main>` element with Container as child, following accessibility best practices
-- **Parallel Routes**: Timeline modal uses `@modal` parallel route for clean URL-based state management
+- **Parallel Routes**: Modals use `@modal` parallel routes for clean URL-based state management (timeline, login, register, admin operations)
+- **Server Actions**: Data mutations handled via Next.js Server Actions in `src/lib/actions.ts` for type-safe form handling
+- **Schema Validation**: Zod schemas in `src/schemas/` ensure data integrity before database operations
+- **Session Utilities**: Auth session helpers in `src/lib/auth-session.ts` provide role-based access control (`verifySession`, `verifyUserAdmin`)
 
 ## Technology Stack
 
@@ -205,11 +252,13 @@ whitehead-church-app/
 - **TypeScript 5** - Type-safe development
 - **React Bootstrap** - Component library
 - **Bootstrap 5** - CSS framework
-- **Better Auth** - Authentication solution
+- **Better Auth** - Authentication solution with two-factor authentication
 - **MongoDB** - Database via Mongoose ODM
 - **Resend** - Email service provider with React email templates
 - **@react-email/components** - React components for building email templates
+- **Zod** - Schema validation library
 - **date-fns** - Date utility library
+- **clsx** - Utility for constructing className strings
 - **Docker** - Containerization
 
 ## Data Storage & API Routes
@@ -243,27 +292,42 @@ Email functionality requires:
 - `APP_EMAIL_ADDRESS` configured for the sender address
 
 **Email Templates:**
-- Email verification - Sent when users sign in, prompting them to verify their email address
+- Email verification - Sent when users register, prompting them to verify their email address
+- Two-factor authentication - Sent when users with 2FA enabled sign in, providing the verification code
+
+### Server Actions
+
+The application uses Next.js Server Actions for data mutations in `src/lib/actions.ts`:
+- Form handling and validation
+- Database write operations
+- Error handling and response formatting
 
 ### API Routes
 
 The application implements Next.js API routes under `src/app/api/`:
 
-- **`/api/auth/[...all]`** - Better Auth handler for all authentication operations (login, register, logout, email verification, session management)
+- **`/api/auth/[...all]`** - Better Auth handler for all authentication operations (login, register, logout, email verification, two-factor authentication, session management)
+- **`/api/service-times`** - GET (list all) and POST (create new) service times
+- **`/api/service-times/[id]`** - PUT (update) and DELETE (remove) specific service time
 
-All data fetching is performed server-side in components using direct MongoDB queries via `src/lib/data.ts` functions.
+Data fetching is performed server-side in components using direct MongoDB queries via `src/lib/data.ts` functions.
 
-## Planned Features
+## Administrative Features
 
-### Administrative Operations
+The application includes a fully-functional admin dashboard with role-based access control:
 
-The authentication system is currently implemented with login and registration functionality via Better Auth. Future development will add administrative capabilities for users with admin privileges:
+**Current Admin Features:**
+- **Service Times Management** - Full CRUD operations for managing church service schedules
+- **Role-Based Access** - Admin-only routes protected using Better Auth's role system via `verifyUserAdmin()` session helper
+- **Modal-Based Editing** - Clean UX for creating, editing, and deleting service times using parallel routes
+- **Starter Data** - Quick setup button to populate initial service times
+- **Form Validation** - Zod schemas ensure data integrity before database operations
 
-**Planned Admin Features:**
-- **Content Management** - Administrative controls for managing church data stored in MongoDB
-- **Role-Based Access** - Leveraging Better Auth's authentication system to restrict administrative operations to authorized users only
-
-These features will enable church administrators to maintain and update website content without requiring direct database access or code deployments.
+**Planned Future Features:**
+- Timeline event management
+- Staff member management
+- Gallery image management
+- User role administration
 
 ## Development Guidelines
 
@@ -272,10 +336,13 @@ These features will enable church administrators to maintain and update website 
 - Server components use `"server-only"` directive for server-exclusive modules
 - Use React Bootstrap for UI components
 - Bootstrap CSS classes for utility styling
-- Path alias `@/*` resolves to `src/*`
+- Path alias `@/*` resolves to `src/*` and `@public/*` resolves to `public/*`
 - Parallel routes (`@modal`) and intercepting routes (`(.)route`) used for modals
+- Server Actions for data mutations (defined in `src/lib/actions.ts`)
+- Zod schemas for form validation (defined in `src/schemas/`)
+- Session verification helpers for protected routes (`verifySession`, `verifyUserAdmin`)
 - Page-specific components co-located in `_components/` folders next to their routes
-- Shared, reusable UI components centralized in `src/components/ui/`
+- Shared, reusable UI components centralized in `src/components/ui/` organized by type
 - Semantic HTML with `<main>` as parent and `<Container>` as child for proper page structure
 
 ## Contributing
